@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row animate-fade-in">
+    <div class="col-12 mb-4">
+        <h2 class="fw-bold text-dark border-bottom pb-3"><i class="fa-solid fa-book-medical text-primary me-2"></i> Informasi Penyakit</h2>
+        <p class="text-muted lead">Daftar penyakit hewan peliharaan (kucing & anjing) berserta penjelasan dan saran pengobatannya.</p>
+    </div>
+
+    <!-- Looping Data Penyakit -->
+    <div class="row g-4">
+        {% for nama, detail in penyakit_info.items() %}
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100 border-0 shadow-sm rounded-4 info-card">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                    <h4 class="fw-bold text-success mb-0">{{ loop.index }}. {{ nama }}</h4>
+                </div>
+                <div class="card-body">
+                    <h6 class="text-secondary fw-bold mt-2"><i class="fa-solid fa-file-medical text-primary me-1"></i> Deskripsi</h6>
+                    <p class="text-muted small lh-lg">{{ detail.deskripsi }}</p>
+
+                    <h6 class="text-secondary fw-bold mt-3"><i class="fa-solid fa-hand-holding-medical text-danger me-1"></i> Solusi Pengobatan</h6>
+                    <p class="text-dark small bg-light p-3 rounded-3 mt-2 lh-lg">{{ detail.solusi }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Bagian Gejala Penyakit -->
+    <div class="col-12 mt-5">
+        <h3 class="fw-bold text-dark border-bottom pb-3"><i class="fa-solid fa-clipboard-list text-primary me-2"></i> Daftar Gejala Penyakit</h3>
+        <p class="text-muted">Ini adalah {{ list_gejala|length }} jenis gejala klinis yang diamati dalam sistem ini.</p>
+        
+        <div class="card border-0 shadow-sm rounded-4 mt-4">
+            <div class="card-body p-4">
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                    {% for g in list_gejala %}
+                    <div class="col">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-success bg-opacity-25 text-success rounded-circle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">{{ loop.index }}</span>
+                            <span class="text-secondary fw-medium">{{ g }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

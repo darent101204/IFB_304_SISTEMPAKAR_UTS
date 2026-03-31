@@ -1,0 +1,132 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fc;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.theme-navbar {
+    background: linear-gradient(135deg, #28a745 0%, #007bff 100%) !important;
+}
+
+.main-wrapper {
+    flex: 1;
+}
+
+/* Animations */
+.animate-fade-in {
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+.animate-fade-in-right {
+    animation: fadeInRight 0.8s ease-in-out;
+}
+
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+/* Hero Section */
+.hero-icon-bg {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-bounce {
+    animation: bounce 3s ease-in-out infinite;
+}
+
+.hero-bounce-delay {
+    animation: bounce 3s ease-in-out infinite;
+    animation-delay: 1.5s;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+/* Custom Checkbox untuk Diagnosa */
+.custom-checkbox-card {
+    background-color: #fff;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.custom-checkbox-card:hover {
+    border-color: #a3d9b1;
+    background-color: #f0fdf4;
+    transform: translateY(-2px);
+}
+
+.custom-checkbox-card input[type="checkbox"]:checked + label {
+    color: #198754;
+    font-weight: 700 !important;
+}
+
+.custom-checkbox-card .form-check-input:checked {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.custom-checkbox-card:has(input:checked) {
+    border-color: #198754;
+    background-color: #e8f5e9;
+    box-shadow: 0 .125rem .25rem rgba(25, 135, 84, .15) !important;
+}
+
+/* Buttons */
+.btn-hover-scale {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-hover-scale:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Card Features */
+.feature-card {
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Badge letter spacing */
+.tracking-wide {
+    letter-spacing: 2px;
+}
+
+.tech-badge {
+    text-align: center;
+    color: #6c757d;
+}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center animate-fade-in">
+    <div class="col-lg-8 text-center mb-5">
+        <h2 class="display-5 fw-bold text-dark"><i class="fa-solid fa-circle-info text-primary me-3"></i>Tentang DiagnoPet AI</h2>
+        <p class="lead text-muted mt-3">Proyek sistem pakar untuk mendiagnosis penyakit pada hewan peliharaan menggunakan metode klasifikasi kecerdasan buatan.</p>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-4 p-md-5">
+                <h4 class="fw-bold mb-4 border-bottom pb-2">Latar Belakang</h4>
+                <p class="text-muted lh-lg">
+                    DiagnoPet AI dibangun untuk membantu para pemilik hewan peliharaan (terutama anjing dan kucing) dalam mengidentifikasi gejala-gejala awal penyakit secara cepat. Sistem ini memanfaatkan dataset pakar yang berisi probabilitas relasi antara gejala dan jenis penyakit.
+                </p>
+                <p class="text-muted lh-lg">
+                    Algoritma utama yang digunakan dalam sistem ini adalah <strong>Naive Bayes Classifier</strong>. Meskipun hasilnya cukup akurat, diagnosa ini bersifat pendamping dan bukan pengganti vonis dokter hewan profesional.
+                </p>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 text-center">
+            <div class="card-body p-4 p-md-5">
+                <h4 class="fw-bold mb-4">Teknologi yang Digunakan</h4>
+                <div class="d-flex justify-content-center gap-4 flex-wrap mt-4">
+                    <div class="tech-badge">
+                        <i class="fa-brands fa-python fa-3x text-primary mb-2"></i>
+                        <h6 class="fw-bold">Python</h6>
+                    </div>
+                    <div class="tech-badge mx-3">
+                        <i class="fa-solid fa-globe fa-3x text-dark mb-2"></i>
+                        <h6 class="fw-bold">Flask</h6>
+                    </div>
+                    <div class="tech-badge mx-3">
+                        <i class="fa-brands fa-bootstrap fa-3x text-primary mb-2"></i>
+                        <h6 class="fw-bold">Bootstrap 5</h6>
+                    </div>
+                    <div class="tech-badge mx-3">
+                        <i class="fa-brands fa-html5 fa-3x text-danger mb-2"></i>
+                        <h6 class="fw-bold">HTML5 & CSS3</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

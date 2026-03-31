@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row g-4 animate-fade-in">
+    <!-- Kolom Kiri: Input dan Detail -->
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-primary text-white p-3 rounded-top-4">
+                <h5 class="mb-0"><i class="fa-solid fa-clipboard-check me-2"></i> Gejala yang Dipilih</h5>
+            </div>
+            <div class="card-body p-4">
+                <ul class="list-group list-group-flush mb-4">
+                    {% for g in gejala_user %}
+                    <li class="list-group-item px-0 border-light"><i class="fa-solid fa-check text-success me-2"></i> {{ g }}</li>
+                    {% endfor %}
+                </ul>
+                <a href="{{ url_for('diagnosa') }}" class="btn btn-outline-primary btn-sm w-100 rounded-pill">
+                    <i class="fa-solid fa-rotate-left me-1"></i> Diagnosa Ulang
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kolom Kanan: Hasil dan Progress -->
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm rounded-4 flex-fill mb-4 banner-diagnosa bg-primary bg-opacity-10 border-start border-5 border-primary">
+            <div class="card-body p-4 p-md-5 text-center">
+                <h6 class="text-uppercase fw-bold text-muted mb-2 tracking-wide">Hasil Diagnosa AI</h6>
+                <h2 class="display-6 fw-bold text-primary mb-3">{{ hasil.diagnosa_tertinggi }}</h2>
+                <div class="badge bg-danger rounded-pill px-4 py-2 fs-6 mb-4 animate-pulse">
+                    Probabilitas: {{ "%.2f"|format(hasil.probabilitas[hasil.diagnosa_tertinggi] * 100) }}%
+                </div>
+                
+                <hr class="w-25 mx-auto text-secondary mb-4">
+                
+                <div class="text-start mt-4 bg-white p-4 rounded-4 shadow-sm">
+                    <h5 class="fw-bold text-dark"><i class="fa-solid fa-circle-info text-primary me-2"></i>Deskripsi</h5>
+                    <p class="text-muted mb-4">{{ hasil.detail.deskripsi }}</p>
+                    
+                    <h5 class="fw-bold text-dark"><i class="fa-solid fa-stethoscope text-success me-2"></i>Solusi & Saran Pengobatan</h5>
+                    <p class="text-muted mb-0">{{ hasil.detail.solusi }}</p>
+                </div>
+                
+                <!-- Peringatan Kesalahan Diagnosa AI -->
+                <div class="alert alert-warning mt-4 text-start font-monospace small" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i> <strong>PENTING:</strong> Hasil diagnosa ini merupakan prediksi berdasarkan algoritma kecerdasan buatan dan probabilitas gejala. Sistem ini tidak menggantikan vonis medis dari dokter hewan profesional. Segera kunjungi klinik hewan terdekat!
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bagian Progress Bar: Semua Penyakit -->
+    <div class="col-12 mt-3">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-bottom p-4 rounded-top-4">
+                <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-chart-bar text-primary me-2"></i> Persentase Kemungkinan Penyakit Lainnya</h5>
+            </div>
+            <div class="card-body p-4">
+                {% for p, prob in hasil.probabilitas.items() %}
+                    {% set per_val = (prob * 100) | round(2) %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="fw-medium text-secondary">{{ p }}</span>
+                            <span class="fw-bold {% if loop.first %}text-success{% else %}text-muted{% endif %}">{{ per_val }}%</span>
+                        </div>
+                        <div class="progress rounded-pill bg-light" style="height: 12px;">
+                            <div class="progress-bar {% if loop.first %}bg-success progress-bar-striped progress-bar-animated{% elif per_val > 50 %}bg-warning{% else %}bg-primary opacity-50{% endif %}" 
+                                 role="progressbar" 
+                                 style="width: {{ per_val }}%" 
+                                 aria-valuenow="{{ per_val }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-success text-white px-4 py-3 rounded-top-4 d-flex align-items-center">
+                <i class="fa-solid fa-clipboard-list fa-lg me-3"></i>
+                <h4 class="mb-0 fw-bold">Pilih Gejala</h4>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                <p class="text-muted mb-4">Centang gejala-gejala yang sedang dialami oleh hewan peliharaan Anda. Anda dapat memilih lebih dari satu gejala untuk mendapatkan hasil diagnosa yang lebih akurat.</p>
+                
+                <form action="{{ url_for('hasil') }}" method="POST">
+                    <div class="row">
+                        {% for gejala in list_gejala %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="form-check custom-checkbox-card shadow-sm rounded-3 p-3 h-100 position-relative">
+                                <input class="form-check-input ms-1 me-2" type="checkbox" name="gejala" value="{{ gejala }}" id="gejala_{{ loop.index }}">
+                                <label class="form-check-label w-100 fw-medium stretched-link" for="gejala_{{ loop.index }}" style="cursor: pointer;">
+                                    {{ gejala }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow w-100 w-md-auto btn-hover-scale">
+                            <i class="fa-solid fa-stethoscope me-2"></i> Proses Diagnosa Sekarang
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

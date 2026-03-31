@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row align-items-center mb-5 vh-75">
+    <div class="col-lg-6 mb-4 animate-fade-in">
+        <h1 class="display-4 fw-bold text-dark mb-4">
+            Hi, Selamat Datang di <span class="text-success">DiagnoPet AI</span>
+        </h1>
+        <p class="lead text-muted mb-4">
+            Sistem Pakar Diagnosa Penyakit Hewan Peliharaan (Kucing & Anjing). Diagnosa cepat dan akurat menggunakan algoritma <strong>Naive Bayes</strong> untuk kesehatan anabul kesayangan Anda.
+        </p>
+        <div class="d-grid gap-3 d-sm-flex justify-content-sm-start">
+            <a href="{{ url_for('diagnosa') }}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm btn-hover-scale">
+                <i class="fa-solid fa-stethoscope me-2"></i>Mulai Diagnosa
+            </a>
+            <a href="{{ url_for('info') }}" class="btn btn-outline-success btn-lg rounded-pill px-5">
+                <i class="fa-solid fa-book-medical me-2"></i>Info Penyakit
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-6 text-center position-relative animate-fade-in-right">
+        <!-- Menggunakan Font Awesome sebagai ilustrasi hero -->
+        <div class="p-5 bg-success bg-opacity-10 rounded-circle d-inline-block shadow-sm hero-icon-bg">
+            <i class="fa-solid fa-dog text-primary fa-5x mx-3 hero-bounce"></i>
+            <i class="fa-solid fa-cat text-success fa-5x mx-3 hero-bounce-delay"></i>
+        </div>
+    </div>
+</div>
+
+<div class="row text-center mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm rounded-4 feature-card">
+            <div class="card-body p-4">
+                <div class="feature-icon bg-primary bg-opacity-10 text-primary mb-3">
+                    <i class="fa-solid fa-bolt fa-2x"></i>
+                </div>
+                <h4 class="fw-bold">Cepat & Responsif</h4>
+                <p class="text-muted">Proses diagnosa langsung memunculkan hasil dalam hitungan detik.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm rounded-4 feature-card">
+            <div class="card-body p-4">
+                <div class="feature-icon bg-success bg-opacity-10 text-success mb-3">
+                    <i class="fa-solid fa-brain fa-2x"></i>
+                </div>
+                <h4 class="fw-bold">Berbasis AI</h4>
+                <p class="text-muted">Menggunakan logika Naive Bayes Classifier berdasarkan dataset akurat terkini.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 border-0 shadow-sm rounded-4 feature-card">
+            <div class="card-body p-4">
+                <div class="feature-icon bg-info bg-opacity-10 text-info mb-3">
+                    <i class="fa-solid fa-hand-holding-heart fa-2x"></i>
+                </div>
+                <h4 class="fw-bold">Mudah Digunakan</h4>
+                <p class="text-muted">Desain simpel, centang gejala dan langsung dapatkan hasil serta solusi.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

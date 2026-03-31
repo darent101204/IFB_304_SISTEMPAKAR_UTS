@@ -1,0 +1,76 @@
+penyakit,gejala,probabilitas
+Digestive Issues,vomiting,0.08
+Digestive Issues,diarrhea,0.138
+Digestive Issues,lethargy,0.008
+Digestive Issues,fever,0.0
+Digestive Issues,cough,0.008
+Digestive Issues,sneezing,0.0
+Digestive Issues,itching,0.002
+Digestive Issues,hair loss,0.0
+Digestive Issues,red eyes,0.0
+Digestive Issues,dehydration,0.01
+Digestive Issues,weight loss,0.018
+Digestive Issues,aggression,0.0
+Digestive Issues,seizures,0.0
+Digestive Issues,paralysis,0.0
+Digestive Issues,bad breath,0.008
+Mobility Problems,vomiting,0.0
+Mobility Problems,diarrhea,0.0
+Mobility Problems,lethargy,0.002
+Mobility Problems,fever,0.01
+Mobility Problems,cough,0.0
+Mobility Problems,sneezing,0.0
+Mobility Problems,itching,0.0
+Mobility Problems,hair loss,0.0
+Mobility Problems,red eyes,0.0
+Mobility Problems,dehydration,0.0
+Mobility Problems,weight loss,0.008
+Mobility Problems,aggression,0.0
+Mobility Problems,seizures,0.0
+Mobility Problems,paralysis,0.008
+Mobility Problems,bad breath,0.0
+Parasites,vomiting,0.002
+Parasites,diarrhea,0.03
+Parasites,lethargy,0.0
+Parasites,fever,0.0
+Parasites,cough,0.008
+Parasites,sneezing,0.005
+Parasites,itching,0.008
+Parasites,hair loss,0.008
+Parasites,red eyes,0.0
+Parasites,dehydration,0.0
+Parasites,weight loss,0.0
+Parasites,aggression,0.0
+Parasites,seizures,0.008
+Parasites,paralysis,0.002
+Parasites,bad breath,0.0
+Ear Infections,vomiting,0.0
+Ear Infections,diarrhea,0.0
+Ear Infections,lethargy,0.002
+Ear Infections,fever,0.002
+Ear Infections,cough,0.0
+Ear Infections,sneezing,0.0
+Ear Infections,itching,0.0
+Ear Infections,hair loss,0.005
+Ear Infections,red eyes,0.0
+Ear Infections,dehydration,0.0
+Ear Infections,weight loss,0.0
+Ear Infections,aggression,0.0
+Ear Infections,seizures,0.0
+Ear Infections,paralysis,0.01
+Ear Infections,bad breath,0.0
+Skin Irritations,vomiting,0.0
+Skin Irritations,diarrhea,0.0
+Skin Irritations,lethargy,0.0
+Skin Irritations,fever,0.0
+Skin Irritations,cough,0.0
+Skin Irritations,sneezing,0.0
+Skin Irritations,itching,0.015
+Skin Irritations,hair loss,0.042
+Skin Irritations,red eyes,0.0
+Skin Irritations,dehydration,0.0
+Skin Irritations,weight loss,0.0
+Skin Irritations,aggression,0.0
+Skin Irritations,seizures,0.0
+Skin Irritations,paralysis,0.0
+Skin Irritations,bad breath,0.0
