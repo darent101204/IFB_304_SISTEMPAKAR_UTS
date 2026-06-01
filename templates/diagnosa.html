@@ -8,29 +8,69 @@
                 <i class="fa-solid fa-clipboard-list fa-lg me-3"></i>
                 <h4 class="mb-0 fw-bold">Pilih Gejala</h4>
             </div>
+
             <div class="card-body p-4 p-md-5">
-                <p class="text-muted mb-4">Centang gejala-gejala yang sedang dialami oleh hewan peliharaan Anda. Anda dapat memilih lebih dari satu gejala untuk mendapatkan hasil diagnosa yang lebih akurat.</p>
-                
+
+                <p class="text-muted mb-4">
+                    Centang gejala yang dialami hewan atau tuliskan gejalanya dalam bentuk kalimat.
+                </p>
+
                 <form action="{{ url_for('hasil') }}" method="POST">
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            Jelaskan Gejala Hewan Anda
+                        </label>
+
+                        <textarea
+                            class="form-control"
+                            name="gejala_text"
+                            rows="4"
+                            placeholder="Contoh: Kucing saya terlihat lemas, tidak mau makan dan badannya panas"></textarea>
+
+                        <small class="text-muted">
+                            Sistem akan mencoba mengenali gejala secara otomatis menggunakan NLP.
+                        </small>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h5 class="fw-bold mb-3">
+                        Atau Pilih Gejala Secara Manual
+                    </h5>
+
                     <div class="row">
                         {% for gejala in list_gejala %}
                         <div class="col-md-6 col-lg-4 mb-3">
                             <div class="form-check custom-checkbox-card shadow-sm rounded-3 p-3 h-100 position-relative">
-                                <input class="form-check-input ms-1 me-2" type="checkbox" name="gejala" value="{{ gejala }}" id="gejala_{{ loop.index }}">
-                                <label class="form-check-label w-100 fw-medium stretched-link" for="gejala_{{ loop.index }}" style="cursor: pointer;">
+                                <input class="form-check-input ms-1 me-2"
+                                       type="checkbox"
+                                       name="gejala"
+                                       value="{{ gejala }}"
+                                       id="gejala_{{ loop.index }}">
+
+                                <label class="form-check-label w-100 fw-medium stretched-link"
+                                       for="gejala_{{ loop.index }}"
+                                       style="cursor: pointer;">
                                     {{ gejala }}
                                 </label>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
-                    
+
                     <div class="text-center mt-5">
-                        <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow w-100 w-md-auto btn-hover-scale">
-                            <i class="fa-solid fa-stethoscope me-2"></i> Proses Diagnosa Sekarang
+                        <button type="submit"
+                                class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow w-100 w-md-auto btn-hover-scale">
+
+                            <i class="fa-solid fa-stethoscope me-2"></i>
+                            Proses Diagnosa Sekarang
+
                         </button>
                     </div>
+
                 </form>
+
             </div>
         </div>
     </div>

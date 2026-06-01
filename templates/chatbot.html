@@ -1,0 +1,207 @@
+# FILE: templates/chatbot.html
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="card shadow border-0 rounded-4">
+
+        <div class="card-header bg-primary text-white py-3">
+            <h4 class="mb-0">
+                🤖 DiagnoPet AI Chatbot
+            </h4>
+        </div>
+
+        <div
+            id="chat-box"
+            class="card-body"
+            style="
+                height: 550px;
+                overflow-y: auto;
+                background: #f8f9fa;
+            "
+        >
+
+            <div class="d-flex mb-3">
+                <div class="alert alert-primary mb-0">
+                    👋 Halo!
+
+                    <br><br>
+
+                    Saya <b>DiagnoPet AI</b>.
+
+                    <br><br>
+
+                    Silakan ceritakan gejala yang dialami hewan Anda.
+
+                    <br><br>
+
+                    Contoh:
+
+                    <ul class="mb-0">
+                        <li>Anjing saya lemas dan tidak mau makan</li>
+                        <li>Anjing saya batuk dan pilek</li>
+                        <li>Kucing saya sering bersin dan sesak napas</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-footer bg-white">
+
+            <div class="input-group">
+
+                <input
+                    type="text"
+                    id="message"
+                    class="form-control"
+                    placeholder="Ketik gejala hewan Anda..."
+                >
+
+                <button
+                    class="btn btn-primary"
+                    onclick="sendMessage()"
+                >
+                    Kirim
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function getTime() {
+
+    const now = new Date();
+
+    return now.toLocaleTimeString(
+        'id-ID',
+        {
+            hour: '2-digit',
+            minute: '2-digit'
+        }
+    );
+}
+
+function sendMessage() {
+
+    let input =
+        document.getElementById("message");
+
+    let message =
+        input.value.trim();
+
+    if(message === "")
+        return;
+
+    let chatBox =
+        document.getElementById("chat-box");
+
+    chatBox.innerHTML += `
+        <div class="d-flex justify-content-end mb-3">
+
+            <div
+                class="alert alert-secondary mb-0"
+                style="max-width:70%;"
+            >
+                ${message}
+
+                <br>
+
+                <small class="text-muted">
+                    ${getTime()}
+                </small>
+
+            </div>
+
+        </div>
+    `;
+
+    fetch(
+        "/chatbot/process",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                "application/x-www-form-urlencoded"
+            },
+
+            body:
+                "message=" +
+                encodeURIComponent(message)
+        }
+    )
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        chatBox.innerHTML += `
+            <div class="d-flex mb-3">
+
+                <div
+                    class="alert alert-success mb-0"
+                    style="
+                        max-width:75%;
+                        white-space:pre-line;
+                    "
+                >
+
+                    🤖 ${data.response}
+
+                    <br>
+
+                    <small class="text-muted">
+                        ${getTime()}
+                    </small>
+
+                </div>
+
+            </div>
+        `;
+
+        chatBox.scrollTop =
+            chatBox.scrollHeight;
+
+    })
+
+    .catch(error => {
+
+        chatBox.innerHTML += `
+            <div class="alert alert-danger">
+                Terjadi kesalahan:
+                ${error}
+            </div>
+        `;
+
+    });
+
+    input.value = "";
+
+}
+
+document
+.getElementById("message")
+.addEventListener(
+    "keypress",
+    function(event){
+
+        if(event.key === "Enter"){
+            sendMessage();
+        }
+
+    }
+);
+
+</script>
+
+{% endblock %}
