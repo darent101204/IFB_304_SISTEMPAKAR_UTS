@@ -1,206 +1,384 @@
-# FILE: templates/chatbot.html
-
 {% extends "base.html" %}
 
 {% block content %}
 
-<div class="container py-4">
+<div class="chatbot-wrapper">
 
-    <div class="card shadow border-0 rounded-4">
+    <!-- Chat Container -->
+    <div class="chat-container">
 
-        <div class="card-header bg-primary text-white py-3">
-            <h4 class="mb-0">
-                🤖 DiagnoPet AI Chatbot
-            </h4>
-        </div>
-
-        <div
-            id="chat-box"
-            class="card-body"
-            style="
-                height: 550px;
-                overflow-y: auto;
-                background: #f8f9fa;
-            "
-        >
-
-            <div class="d-flex mb-3">
-                <div class="alert alert-primary mb-0">
-                    👋 Halo!
-
-                    <br><br>
-
-                    Saya <b>DiagnoPet AI</b>.
-
-                    <br><br>
-
-                    Silakan ceritakan gejala yang dialami hewan Anda.
-
-                    <br><br>
-
-                    Contoh:
-
-                    <ul class="mb-0">
-                        <li>Anjing saya lemas dan tidak mau makan</li>
-                        <li>Anjing saya batuk dan pilek</li>
-                        <li>Kucing saya sering bersin dan sesak napas</li>
-                    </ul>
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="chat-header-left">
+                <div class="bot-avatar-header">
+                    <i class="fa-solid fa-robot"></i>
+                    <span class="status-dot"></span>
+                </div>
+                <div class="chat-header-info">
+                    <h5 class="chat-header-title">DiagnoPet AI</h5>
+                    <span class="chat-header-status">Online • Siap membantu</span>
                 </div>
             </div>
-
+            <div class="chat-header-actions">
+                <button class="chat-action-btn" id="btn-reset" title="Mulai Percakapan Baru">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+                <button class="chat-action-btn" id="btn-scroll-bottom" title="Scroll ke Bawah">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
         </div>
 
-        <div class="card-footer bg-white">
+        <!-- Gejala Counter Badge -->
+        <div class="gejala-counter" id="gejala-counter" style="display: none;">
+            <i class="fa-solid fa-clipboard-list"></i>
+            <span id="gejala-count-text">0 gejala teridentifikasi</span>
+            <button class="gejala-counter-toggle" id="btn-toggle-gejala" title="Lihat gejala">
+                <i class="fa-solid fa-eye"></i>
+            </button>
+        </div>
 
-            <div class="input-group">
-
-                <input
-                    type="text"
-                    id="message"
-                    class="form-control"
-                    placeholder="Ketik gejala hewan Anda..."
-                >
-
-                <button
-                    class="btn btn-primary"
-                    onclick="sendMessage()"
-                >
-                    Kirim
+        <!-- Gejala Detail Panel -->
+        <div class="gejala-panel" id="gejala-panel" style="display: none;">
+            <div class="gejala-panel-header">
+                <span><i class="fa-solid fa-list-check me-2"></i>Gejala Teridentifikasi</span>
+                <button class="gejala-panel-close" id="btn-close-gejala">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
+            </div>
+            <ul class="gejala-panel-list" id="gejala-panel-list">
+            </ul>
+        </div>
 
+        <!-- Chat Messages Area -->
+        <div class="chat-messages" id="chat-messages">
+
+            <!-- Welcome Message -->
+            <div class="chat-date-divider">
+                <span>Hari Ini</span>
             </div>
 
+            <div class="message-group bot-message animate-message">
+                <div class="bot-avatar">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-bubble bot-bubble">
+                        <p>Halo! 👋 Saya <strong>DiagnoPet AI</strong>, asisten diagnosa penyakit hewan peliharaan Anda.</p>
+                        <p>Ceritakan gejala yang dialami hewan Anda, dan saya akan membantu menganalisisnya menggunakan metode <strong>Naive Bayes</strong>.</p>
+                        <div class="welcome-examples">
+                            <p class="examples-title"><i class="fa-solid fa-lightbulb"></i> Contoh:</p>
+                            <ul>
+                                <li>"Anjing saya lemas dan tidak mau makan"</li>
+                                <li>"Kucing saya batuk dan pilek"</li>
+                                <li>"Hewan saya demam dan muntah-muntah"</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <span class="message-time">
+                        <script>document.write(new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}))</script>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Replies Area -->
+        <div class="quick-replies-container" id="quick-replies" style="display: none;">
+        </div>
+
+        <!-- Chat Input Area -->
+        <div class="chat-input-area">
+            <div class="chat-input-wrapper">
+                <input
+                    type="text"
+                    id="chat-input"
+                    class="chat-input"
+                    placeholder="Ketik gejala hewan Anda..."
+                    autocomplete="off"
+                >
+                <button class="chat-send-btn" id="btn-send" title="Kirim Pesan">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+            <div class="chat-input-hint">
+                <i class="fa-solid fa-circle-info"></i>
+                Tekan Enter untuk mengirim • Ketik "reset" untuk mulai ulang
+            </div>
         </div>
 
     </div>
-
 </div>
 
 <script>
+// ============================
+// CHATBOT FRONTEND ENGINE
+// ============================
+
+const chatMessages = document.getElementById('chat-messages');
+const chatInput = document.getElementById('chat-input');
+const btnSend = document.getElementById('btn-send');
+const btnReset = document.getElementById('btn-reset');
+const btnScrollBottom = document.getElementById('btn-scroll-bottom');
+const quickRepliesContainer = document.getElementById('quick-replies');
+const gejalaCounter = document.getElementById('gejala-counter');
+const gejalaCountText = document.getElementById('gejala-count-text');
+const gejalaPanel = document.getElementById('gejala-panel');
+const gejalaPanelList = document.getElementById('gejala-panel-list');
+const btnToggleGejala = document.getElementById('btn-toggle-gejala');
+const btnCloseGejala = document.getElementById('btn-close-gejala');
+
+let isTyping = false;
 
 function getTime() {
-
-    const now = new Date();
-
-    return now.toLocaleTimeString(
-        'id-ID',
-        {
-            hour: '2-digit',
-            minute: '2-digit'
-        }
-    );
+    return new Date().toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
 }
 
-function sendMessage() {
+function scrollToBottom() {
+    chatMessages.scrollTo({
+        top: chatMessages.scrollHeight,
+        behavior: 'smooth'
+    });
+}
 
-    let input =
-        document.getElementById("message");
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+}
 
-    let message =
-        input.value.trim();
+function formatResponse(text) {
+    // Convert **bold** to <strong>
+    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Convert bullet points
+    text = text.replace(/^• (.+)$/gm, '<span class="chat-bullet">• $1</span>');
+    // Convert ━ lines to hr
+    text = text.replace(/━+/g, '<hr class="chat-hr">');
+    // Convert newlines to br
+    text = text.replace(/\n/g, '<br>');
+    return text;
+}
 
-    if(message === "")
-        return;
-
-    let chatBox =
-        document.getElementById("chat-box");
-
-    chatBox.innerHTML += `
-        <div class="d-flex justify-content-end mb-3">
-
-            <div
-                class="alert alert-secondary mb-0"
-                style="max-width:70%;"
-            >
-                ${message}
-
-                <br>
-
-                <small class="text-muted">
-                    ${getTime()}
-                </small>
-
+// ---- Add User Message ----
+function addUserMessage(text) {
+    const html = `
+        <div class="message-group user-message animate-message">
+            <div class="message-content">
+                <div class="message-bubble user-bubble">
+                    <p>${escapeHtml(text)}</p>
+                </div>
+                <span class="message-time">${getTime()}</span>
             </div>
-
+            <div class="user-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
         </div>
     `;
-
-    fetch(
-        "/chatbot/process",
-        {
-            method: "POST",
-
-            headers: {
-                "Content-Type":
-                "application/x-www-form-urlencoded"
-            },
-
-            body:
-                "message=" +
-                encodeURIComponent(message)
-        }
-    )
-
-    .then(response => response.json())
-
-    .then(data => {
-
-        chatBox.innerHTML += `
-            <div class="d-flex mb-3">
-
-                <div
-                    class="alert alert-success mb-0"
-                    style="
-                        max-width:75%;
-                        white-space:pre-line;
-                    "
-                >
-
-                    🤖 ${data.response}
-
-                    <br>
-
-                    <small class="text-muted">
-                        ${getTime()}
-                    </small>
-
-                </div>
-
-            </div>
-        `;
-
-        chatBox.scrollTop =
-            chatBox.scrollHeight;
-
-    })
-
-    .catch(error => {
-
-        chatBox.innerHTML += `
-            <div class="alert alert-danger">
-                Terjadi kesalahan:
-                ${error}
-            </div>
-        `;
-
-    });
-
-    input.value = "";
-
+    chatMessages.insertAdjacentHTML('beforeend', html);
+    scrollToBottom();
 }
 
-document
-.getElementById("message")
-.addEventListener(
-    "keypress",
-    function(event){
+// ---- Add Bot Message ----
+function addBotMessage(text, quickReplies = []) {
+    const formattedText = formatResponse(text);
+    const html = `
+        <div class="message-group bot-message animate-message">
+            <div class="bot-avatar">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-bubble bot-bubble">
+                    ${formattedText}
+                </div>
+                <span class="message-time">${getTime()}</span>
+            </div>
+        </div>
+    `;
+    chatMessages.insertAdjacentHTML('beforeend', html);
 
-        if(event.key === "Enter"){
-            sendMessage();
-        }
-
+    // Show quick replies if any
+    if (quickReplies && quickReplies.length > 0) {
+        showQuickReplies(quickReplies);
+    } else {
+        hideQuickReplies();
     }
-);
+
+    scrollToBottom();
+}
+
+// ---- Typing Indicator ----
+function showTypingIndicator() {
+    if (isTyping) return;
+    isTyping = true;
+
+    const html = `
+        <div class="message-group bot-message animate-message" id="typing-indicator">
+            <div class="bot-avatar">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-bubble bot-bubble typing-bubble">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    chatMessages.insertAdjacentHTML('beforeend', html);
+    scrollToBottom();
+}
+
+function removeTypingIndicator() {
+    const indicator = document.getElementById('typing-indicator');
+    if (indicator) {
+        indicator.remove();
+    }
+    isTyping = false;
+}
+
+// ---- Quick Replies ----
+function showQuickReplies(replies) {
+    quickRepliesContainer.innerHTML = '';
+    replies.forEach(reply => {
+        const btn = document.createElement('button');
+        btn.className = 'quick-reply-btn';
+        btn.textContent = reply;
+        btn.addEventListener('click', () => {
+            sendMessage(reply);
+        });
+        quickRepliesContainer.appendChild(btn);
+    });
+    quickRepliesContainer.style.display = 'flex';
+}
+
+function hideQuickReplies() {
+    quickRepliesContainer.style.display = 'none';
+    quickRepliesContainer.innerHTML = '';
+}
+
+// ---- Gejala Counter ----
+function updateGejalaCounter() {
+    fetch('/chatbot/status')
+        .then(r => r.json())
+        .then(data => {
+            if (data.gejala_count > 0) {
+                gejalaCounter.style.display = 'flex';
+                gejalaCountText.textContent = `${data.gejala_count} gejala teridentifikasi`;
+
+                // Update panel list
+                gejalaPanelList.innerHTML = '';
+                data.gejala_list.forEach(g => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${g}`;
+                    gejalaPanelList.appendChild(li);
+                });
+            } else {
+                gejalaCounter.style.display = 'none';
+                gejalaPanel.style.display = 'none';
+            }
+        })
+        .catch(() => {});
+}
+
+// ---- Send Message ----
+function sendMessage(text) {
+    if (!text) {
+        text = chatInput.value.trim();
+    }
+    if (!text) return;
+
+    chatInput.value = '';
+    hideQuickReplies();
+
+    addUserMessage(text);
+
+    // Show typing indicator
+    showTypingIndicator();
+
+    // Send to backend
+    fetch('/chatbot/process', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'message=' + encodeURIComponent(text)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Simulate typing delay for natural feel
+        setTimeout(() => {
+            removeTypingIndicator();
+            addBotMessage(data.response, data.quick_replies || []);
+            updateGejalaCounter();
+        }, 600 + Math.random() * 800);
+    })
+    .catch(error => {
+        removeTypingIndicator();
+        addBotMessage('⚠️ Terjadi kesalahan koneksi. Silakan coba lagi.', []);
+    });
+}
+
+// ---- Reset Chat ----
+function resetChat() {
+    fetch('/chatbot/reset', {
+        method: 'POST'
+    })
+    .then(r => r.json())
+    .then(data => {
+        // Clear all messages except the divider
+        chatMessages.innerHTML = `
+            <div class="chat-date-divider">
+                <span>Hari Ini</span>
+            </div>
+        `;
+        hideQuickReplies();
+        gejalaCounter.style.display = 'none';
+        gejalaPanel.style.display = 'none';
+
+        addBotMessage("🔄 Sesi telah direset!\n\nHalo kembali! 👋 Silakan ceritakan gejala hewan Anda dari awal.\n\n**Contoh:**\n• \"Anjing saya lemas dan tidak mau makan\"\n• \"Kucing saya batuk dan pilek\"", []);
+    })
+    .catch(() => {
+        addBotMessage('⚠️ Gagal mereset sesi. Silakan coba lagi.', []);
+    });
+}
+
+// ---- Event Listeners ----
+
+btnSend.addEventListener('click', () => sendMessage());
+
+chatInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        sendMessage();
+    }
+});
+
+btnReset.addEventListener('click', resetChat);
+
+btnScrollBottom.addEventListener('click', scrollToBottom);
+
+btnToggleGejala.addEventListener('click', () => {
+    if (gejalaPanel.style.display === 'none') {
+        gejalaPanel.style.display = 'block';
+    } else {
+        gejalaPanel.style.display = 'none';
+    }
+});
+
+btnCloseGejala.addEventListener('click', () => {
+    gejalaPanel.style.display = 'none';
+});
+
+// Focus input on load
+chatInput.focus();
+
+// Initial status check
+updateGejalaCounter();
 
 </script>
 
