@@ -23,15 +23,21 @@
                 <button class="chat-action-btn" id="btn-reset" title="Mulai Percakapan Baru">
                     <i class="fa-solid fa-rotate-right"></i>
                 </button>
+                <button class="chat-action-btn" id="btn-toggle-mode" title="Toggle Mode (Immediate / Stepwise)">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                </button>
                 <button class="chat-action-btn" id="btn-scroll-bottom" title="Scroll ke Bawah">
                     <i class="fa-solid fa-chevron-down"></i>
                 </button>
             </div>
         </div>
+        <div class="chat-header-mode" style="padding:6px 12px; display:flex; gap:8px; align-items:center;">
+            <span id="mode-indicator" class="badge bg-secondary">Mode: Immediate</span>
+        </div>
 
         <!-- Gejala Counter Badge -->
         <div class="gejala-counter" id="gejala-counter" style="display: none;">
-            <i class="fa-solid fa-clipboard-list"></i>
+            <i class="fa-solid fa-list-check"></i>
             <span id="gejala-count-text">0 gejala teridentifikasi</span>
             <button class="gejala-counter-toggle" id="btn-toggle-gejala" title="Lihat gejala">
                 <i class="fa-solid fa-eye"></i>
@@ -126,6 +132,8 @@ const gejalaPanel = document.getElementById('gejala-panel');
 const gejalaPanelList = document.getElementById('gejala-panel-list');
 const btnToggleGejala = document.getElementById('btn-toggle-gejala');
 const btnCloseGejala = document.getElementById('btn-close-gejala');
+const btnToggleMode = document.getElementById('btn-toggle-mode');
+const modeIndicator = document.getElementById('mode-indicator');
 
 let isTyping = false;
 
@@ -156,8 +164,15 @@ function formatResponse(text) {
     text = text.replace(/^• (.+)$/gm, '<span class="chat-bullet">• $1</span>');
     // Convert ━ lines to hr
     text = text.replace(/━+/g, '<hr class="chat-hr">');
+    // Normalize whitespace
+    text = text.replace(/[ \t]{2,}/g, ' ');
+    text = text.replace(/\n\s+/g, '\n');
+    text = text.trim();
+
     // Convert newlines to br
     text = text.replace(/\n/g, '<br>');
+    // Collapse multiple consecutive <br> to a single <br> to avoid large empty spaces
+    text = text.replace(/(<br>\s*){2,}/g, '<br>');
     return text;
 }
 
@@ -266,6 +281,12 @@ function updateGejalaCounter() {
     fetch('/chatbot/status')
         .then(r => r.json())
         .then(data => {
+            // update mode indicator
+            if (modeIndicator) {
+                const m = data.mode || 'immediate';
+                modeIndicator.textContent = `Mode: ${m === 'immediate' ? 'Immediate' : 'Stepwise'}`;
+                modeIndicator.className = m === 'immediate' ? 'badge bg-secondary' : 'badge bg-info';
+            }
             if (data.gejala_count > 0) {
                 gejalaCounter.style.display = 'flex';
                 gejalaCountText.textContent = `${data.gejala_count} gejala teridentifikasi`;
@@ -350,6 +371,32 @@ function resetChat() {
 // ---- Event Listeners ----
 
 btnSend.addEventListener('click', () => sendMessage());
+
+// Mode toggle button
+if (btnToggleMode) {
+    btnToggleMode.addEventListener('click', () => {
+        // read current mode from badge text
+        const current = (modeIndicator && modeIndicator.textContent && modeIndicator.textContent.toLowerCase().includes('stepwise')) ? 'stepwise' : 'immediate';
+        const newMode = current === 'immediate' ? 'stepwise' : 'immediate';
+
+        fetch('/chatbot/mode', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'mode=' + encodeURIComponent(newMode)
+        })
+        .then(r => r.json())
+        .then(res => {
+            if (res.mode) {
+                modeIndicator.textContent = `Mode: ${res.mode === 'immediate' ? 'Immediate' : 'Stepwise'}`;
+                modeIndicator.className = res.mode === 'immediate' ? 'badge bg-secondary' : 'badge bg-info';
+                addBotMessage(`✅ Mode diubah menjadi **${res.mode === 'immediate' ? 'Immediate' : 'Stepwise'}**.`, []);
+            }
+        })
+        .catch(() => {
+            addBotMessage('⚠️ Gagal mengganti mode.', []);
+        });
+    });
+}
 
 chatInput.addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {

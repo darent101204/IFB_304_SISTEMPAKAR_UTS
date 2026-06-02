@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, url_for, ses
 from main import get_data_gejala, hitung_bayes, KAMUS_PENYAKIT
 from nlp_processor import ekstrak_gejala
 import pandas as pd
+import re
 
 app = Flask(__name__)
 app.secret_key = 'diagnopet_ai_super_secret_key'
@@ -64,40 +65,46 @@ def detect_intent(text):
     """Deteksi intent dari pesan user"""
     text_lower = text.lower().strip()
 
+    def contains_word(t, token):
+        return re.search(rf"\b{re.escape(token)}\b", t) is not None
+
+    def contains_phrase(t, phrase):
+        return re.search(rf"\b{re.escape(phrase)}\b", t) is not None
+
     # Intent: Salam
     salam_keywords = ["halo", "hai", "hi", "hello", "selamat pagi", "selamat siang",
-                       "selamat sore", "selamat malam", "hey", "p", "assalamualaikum"]
-    if any(kata in text_lower for kata in salam_keywords):
+                       "selamat sore", "selamat malam", "hey", "assalamualaikum"]
+    if any(contains_word(text_lower, kata) for kata in salam_keywords):
         return "salam"
 
     # Intent: Tanya kemampuan
-    if any(phrase in text_lower for phrase in [
+    if any(contains_phrase(text_lower, phrase) for phrase in [
         "apa yang bisa kamu lakukan", "bisa apa", "fungsi kamu",
         "kemampuan kamu", "kamu bisa apa", "apa fungsimu"
     ]):
         return "kemampuan"
 
     # Intent: Tanya identitas
-    if any(phrase in text_lower for phrase in [
+    if any(contains_phrase(text_lower, phrase) for phrase in [
         "siapa kamu", "kamu siapa", "nama kamu", "siapa namamu"
     ]):
         return "identitas"
 
     # Intent: Terima kasih
-    if any(kata in text_lower for kata in [
+    if any(contains_word(text_lower, kata) for kata in [
         "terima kasih", "makasih", "thanks", "thank you", "trims"
     ]):
         return "terima_kasih"
 
     # Intent: Reset / mulai ulang
-    if any(phrase in text_lower for phrase in [
+    if any(contains_phrase(text_lower, phrase) for phrase in [
         "mulai ulang", "reset", "ulang", "diagnosa baru",
         "mulai lagi", "dari awal", "ulangi"
     ]):
         return "reset"
 
     # Intent: User bilang cukup / minta diagnosa
-    if any(phrase in text_lower for phrase in [
+    if any(contains_phrase(text_lower, phrase) for phrase in [
         "cukup", "diagnosa", "itu saja", "itu aja", "hanya itu",
         "tidak ada lagi", "sudah", "udah", "analisis",
         "proses", "hasil", "selesai", "sekian"
@@ -111,6 +118,18 @@ def detect_intent(text):
     # Intent: Jawaban tidak (untuk follow-up)
     if text_lower in ["tidak", "nggak", "enggak", "no", "n", "tdk", "gak", "ga", "ngga"]:
         return "jawab_tidak"
+
+    # Intent: Set mode stepwise (tanya bertahap)
+    if any(contains_phrase(text_lower, phrase) for phrase in ["tanya bertahap", "bertahap", "tanya jawab", "satu per satu", "tanyakan satu per satu"]):
+        return "set_stepwise"
+
+    # Intent: Set mode immediate (langsung diagnosa)
+    if any(contains_phrase(text_lower, phrase) for phrase in ["diagnosa langsung", "langsung", "segera", "diagnosa sekarang", "langsung diagnosa"]):
+        return "set_immediate"
+
+    # Intent: Pertanyaan sebab-akibat (kenapa/mengapa ...)
+    if contains_phrase(text_lower, 'kenapa') or contains_phrase(text_lower, 'mengapa'):
+        return 'sebab'
 
     # Default: coba ekstrak gejala
     return "gejala"
@@ -128,6 +147,9 @@ def init_session():
         session['chatbot_pending_gejala'] = None
     if 'chatbot_sudah_diagnosa' not in session:
         session['chatbot_sudah_diagnosa'] = False
+    if 'chatbot_mode' not in session:
+        # 'immediate' = langsung diagnosa, 'stepwise' = tanya jawab bertahap
+        session['chatbot_mode'] = 'immediate'
 
 
 def reset_session():
@@ -164,8 +186,6 @@ def build_diagnosa_response(gejala_list):
 Berdasarkan {len(gejala_list)} gejala yang teridentifikasi:
 {format_gejala_list(gejala_list)}
 
-━━━━━━━━━━━━━━━━━━
-
 🏥 **Diagnosa Utama: {diagnosa}**
 📊 Probabilitas: **{prob:.1f}%**
 
@@ -175,12 +195,13 @@ Berdasarkan {len(gejala_list)} gejala yang teridentifikasi:
 💊 **Solusi & Saran:**
 {detail.get('solusi', '-')}
 
-━━━━━━━━━━━━━━━━━━
-
 📊 **Perbandingan Probabilitas:**
 {prob_text}
 
 ⚠️ *Hasil ini merupakan prediksi berdasarkan algoritma Naive Bayes. Segera konsultasikan ke dokter hewan untuk pemeriksaan lebih lanjut.*"""
+
+    # Bersihkan whitespace berlebih (lebih dari satu baris kosong -> satu baris kosong)
+    response = re.sub(r"\n\s*\n+", "\n\n", response).strip()
 
     return response, hasil
 
@@ -237,6 +258,25 @@ def process_chatbot_message(text):
             "response": "🔄 Sesi telah direset!\n\nSilakan ceritakan gejala hewan Anda dari awal.",
             "type": "bot",
             "quick_replies": []
+        }
+
+    # ---- SET MODE: STEPWISE / IMMEDIATE ----
+    if intent == "set_stepwise":
+        session['chatbot_mode'] = 'stepwise'
+        session.modified = True
+        return {
+            "response": "✅ Mode diubah: Tanya jawab bertahap aktif. Saya akan mengajukan pertanyaan follow-up untuk memperjelas gejala.",
+            "type": "bot",
+            "quick_replies": ["Mulai diagnosa", "Reset percakapan"]
+        }
+
+    if intent == "set_immediate":
+        session['chatbot_mode'] = 'immediate'
+        session.modified = True
+        return {
+            "response": "✅ Mode diubah: Diagnosa langsung aktif. Saya akan memberikan hasil diagnosa segera setelah gejala tercatat.",
+            "type": "bot",
+            "quick_replies": ["Mulai diagnosa", "Reset percakapan"]
         }
 
     # ---- JAWAB YA (untuk follow-up) ----
@@ -345,6 +385,44 @@ def process_chatbot_message(text):
             }
         }
 
+    # ---- SEBAB / KENAPA (pertanyaan sebab-akibat) ----
+    if intent == 'sebab':
+        # coba ekstrak gejala dari kalimat
+        gejala_terkait = ekstrak_gejala(text)
+
+        # jika tidak ditemukan, coba hapus kata tanya awal dan ekstrak lagi
+        if not gejala_terkait:
+            text2 = re.sub(r'^(kenapa|mengapa)\b', '', text.lower()).strip()
+            gejala_terkait = ekstrak_gejala(text2)
+
+        if not gejala_terkait:
+            return {
+                "response": "Maaf, saya kurang paham gejalanya. Bisa jelaskan lebih spesifik (mis. 'mata kuning', 'batuk berdahak')?",
+                "type": "bot",
+                "quick_replies": []
+            }
+
+        # lakukan bayes dengan gejala yang diekstrak
+        hasil = hitung_bayes(gejala_terkait)
+        diagnosa_utama = hasil['diagnosa_tertinggi']
+        prob = hasil['probabilitas'][diagnosa_utama] * 100
+        detail = hasil.get('detail', {})
+
+        # buat ringkasan singkat
+        top3 = list(hasil['probabilitas'].items())[:3]
+        prob_text = "\n".join([f"- {p}: {v*100:.1f}%" for p, v in top3])
+
+        response = f"Berdasarkan gejala {format_gejala_list(gejala_terkait)} kemungkinan penyebabnya antara lain:\n{prob_text}\n\nDiagnosa teratas: {diagnosa_utama} ({prob:.1f}%)\n{detail.get('deskripsi', '-') }\n{detail.get('solusi', '-') }"
+
+        # rapikan whitespace
+        response = re.sub(r"\n\s*\n+", "\n\n", response).strip()
+
+        return {
+            "response": response,
+            "type": "bot",
+            "quick_replies": ["Diagnosa sekarang", "Reset percakapan"]
+        }
+
     # ---- GEJALA (DEFAULT) ----
     gejala_baru = ekstrak_gejala(text)
 
@@ -371,6 +449,7 @@ def process_chatbot_message(text):
     session['chatbot_state'] = 'collecting'
     session.modified = True
 
+    # Jika tidak ada gejala baru
     if not gejala_ditambahkan:
         return {
             "response": f"Gejala tersebut sudah tercatat sebelumnya. ✅\n\nGejala saat ini ({len(gejala_list)}):\n{format_gejala_list(gejala_list)}\n\nApakah ada gejala lain? Atau ketik **\"diagnosa\"** untuk melihat hasil.",
@@ -378,7 +457,24 @@ def process_chatbot_message(text):
             "quick_replies": ["Diagnosa sekarang", "Tidak ada lagi"]
         }
 
-    # Konfirmasi gejala yang ditambahkan
+    # Mode: immediate = langsung diagnosa, stepwise = tanya jawab bertahap
+    if session.get('chatbot_mode', 'immediate') == 'immediate':
+        response_text, hasil = build_diagnosa_response(gejala_list)
+        session['chatbot_sudah_diagnosa'] = True
+        session.modified = True
+
+        return {
+            "response": response_text,
+            "type": "bot",
+            "quick_replies": ["Diagnosa ulang", "Terima kasih"],
+            "diagnosa_data": {
+                "diagnosa": hasil['diagnosa_tertinggi'],
+                "probabilitas": {k: round(v * 100, 1) for k, v in hasil['probabilitas'].items()},
+                "gejala_count": len(gejala_list)
+            }
+        }
+
+    # Jika mode 'stepwise': konfirmasi gejala dan lanjutkan pertanyaan follow-up
     konfirmasi = f"✅ Gejala terdeteksi:\n{format_gejala_list(gejala_ditambahkan)}"
 
     if len(gejala_list) > len(gejala_ditambahkan):
@@ -523,8 +619,21 @@ def chatbot_status():
         "gejala_count": len(session.get('chatbot_gejala', [])),
         "gejala_list": session.get('chatbot_gejala', []),
         "state": session.get('chatbot_state', 'idle'),
-        "sudah_diagnosa": session.get('chatbot_sudah_diagnosa', False)
+        "sudah_diagnosa": session.get('chatbot_sudah_diagnosa', False),
+        "mode": session.get('chatbot_mode', 'immediate')
     })
+
+
+@app.route('/chatbot/mode', methods=['POST'])
+def chatbot_set_mode():
+    """Endpoint untuk mengubah mode chatbot (immediate | stepwise)"""
+    mode = request.form.get('mode', '').strip()
+    if mode not in ('immediate', 'stepwise'):
+        return jsonify({"error": "invalid mode"}), 400
+
+    session['chatbot_mode'] = mode
+    session.modified = True
+    return jsonify({"mode": mode, "message": f"Mode diubah menjadi {mode}"})
 
 
 if __name__ == '__main__':
