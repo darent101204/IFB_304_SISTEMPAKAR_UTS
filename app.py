@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect, url_for, session, jsonify
-from main import get_data_gejala, hitung_bayes, KAMUS_PENYAKIT
+from main import get_data_gejala, hitung_bayes, KAMUS_PENYAKIT, DESKRIPSI_GEJALA
 from nlp_processor import ekstrak_gejala
 import pandas as pd
 import re
@@ -521,7 +521,8 @@ def diagnosa():
     list_gejala = get_data_gejala()
     return render_template(
         'diagnosa.html',
-        list_gejala=list_gejala
+        list_gejala=list_gejala,
+        deskripsi_gejala=DESKRIPSI_GEJALA
     )
 
 

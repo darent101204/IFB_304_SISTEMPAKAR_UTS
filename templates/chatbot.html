@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
+{% block body_class %}chatbot-page{% endblock %}
+{% block footer %}{% endblock %}
+{% block floating_chat %}{% endblock %}
+
 {% block content %}
 
-<div class="chatbot-wrapper">
+<div class="chatbot-wrapper animate-fade-in">
 
     <!-- Chat Container -->
     <div class="chat-container">
@@ -15,7 +19,7 @@
                     <span class="status-dot"></span>
                 </div>
                 <div class="chat-header-info">
-                    <h5 class="chat-header-title">DiagnoPet AI</h5>
+                    <h5 class="chat-header-title">DiagnoPet Assistant</h5>
                     <span class="chat-header-status">Online • Siap membantu</span>
                 </div>
             </div>
@@ -59,33 +63,44 @@
         <!-- Chat Messages Area -->
         <div class="chat-messages" id="chat-messages">
 
-            <!-- Welcome Message -->
             <div class="chat-date-divider">
                 <span>Hari Ini</span>
             </div>
 
-            <div class="message-group bot-message animate-message">
-                <div class="bot-avatar">
-                    <i class="fa-solid fa-robot"></i>
+            <!-- Welcome Card -->
+            <div class="welcome-card border-0 shadow-sm rounded-4 p-4 text-center mb-4" id="welcome-card">
+                <div class="welcome-avatar-wrapper bg-success bg-opacity-10 text-success mx-auto mb-3">
+                    <i class="bi bi-robot fs-1 animate-pulse"></i>
                 </div>
-                <div class="message-content">
-                    <div class="message-bubble bot-bubble">
-                        <p>Halo! 👋 Saya <strong>DiagnoPet AI</strong>, asisten diagnosa penyakit hewan peliharaan Anda.</p>
-                        <p>Ceritakan gejala yang dialami hewan Anda, dan saya akan membantu menganalisisnya menggunakan metode <strong>Naive Bayes</strong>.</p>
-                        <div class="welcome-examples">
-                            <p class="examples-title"><i class="fa-solid fa-lightbulb"></i> Contoh:</p>
-                            <ul>
-                                <li>"Anjing saya lemas dan tidak mau makan"</li>
-                                <li>"Kucing saya batuk dan pilek"</li>
-                                <li>"Hewan saya demam dan muntah-muntah"</li>
-                            </ul>
-                        </div>
+                <h4 class="fw-bold text-dark mb-2">🤖 DiagnoPet Assistant</h4>
+                <p class="text-muted mb-4">
+                    Halo! Saya asisten kesehatan hewan Anda. Tulis gejala atau keluhan klinis yang dialami anjing/kucing Anda untuk mendiagnosa penyakitnya secara cepat menggunakan **Sistem Pakar Naive Bayes**.
+                </p>
+                
+                <div class="suggested-prompts-grid row g-2 text-start">
+                    <div class="col-md-6">
+                        <button type="button" class="btn prompt-item w-100" onclick="useSuggestedPrompt('Anjing saya lemas dan tidak mau makan')">
+                            <i class="bi bi-chat-heart text-primary me-2"></i> Anjing lemas & tidak makan
+                        </button>
                     </div>
-                    <span class="message-time">
-                        <script>document.write(new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}))</script>
-                    </span>
+                    <div class="col-md-6">
+                        <button type="button" class="btn prompt-item w-100" onclick="useSuggestedPrompt('Kucing saya batuk dan bersin-bersin')">
+                            <i class="bi bi-chat-heart text-success me-2"></i> Kucing batuk & bersin
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn prompt-item w-100" onclick="useSuggestedPrompt('Hewan saya muntah dan diare terus')">
+                            <i class="bi bi-chat-heart text-danger me-2"></i> Muntah & diare terus
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn prompt-item w-100" onclick="useSuggestedPrompt('Mata kucing saya berair jernih')">
+                            <i class="bi bi-chat-heart text-info me-2"></i> Mata kucing berair jernih
+                        </button>
+                    </div>
                 </div>
             </div>
+
         </div>
 
         <!-- Quick Replies Area -->
@@ -176,17 +191,35 @@ function formatResponse(text) {
     return text;
 }
 
+// ---- Suggested Prompts Action ----
+function useSuggestedPrompt(text) {
+    sendMessage(text);
+    // Remove welcome card smoothly when prompt is sent
+    const welcomeCard = document.getElementById('welcome-card');
+    if (welcomeCard) {
+        welcomeCard.style.opacity = '0';
+        welcomeCard.style.transform = 'translateY(-10px)';
+        setTimeout(() => welcomeCard.remove(), 300);
+    }
+}
+
 // ---- Add User Message ----
 function addUserMessage(text) {
+    // Remove welcome card if user manually types first message
+    const welcomeCard = document.getElementById('welcome-card');
+    if (welcomeCard) {
+        welcomeCard.remove();
+    }
+
     const html = `
         <div class="message-group user-message animate-message">
             <div class="message-content">
-                <div class="message-bubble user-bubble">
+                <div class="message-bubble user-bubble shadow-sm">
                     <p>${escapeHtml(text)}</p>
                 </div>
                 <span class="message-time">${getTime()}</span>
             </div>
-            <div class="user-avatar">
+            <div class="user-avatar bg-primary text-white shadow-sm">
                 <i class="fa-solid fa-user"></i>
             </div>
         </div>
@@ -200,11 +233,11 @@ function addBotMessage(text, quickReplies = []) {
     const formattedText = formatResponse(text);
     const html = `
         <div class="message-group bot-message animate-message">
-            <div class="bot-avatar">
+            <div class="bot-avatar bg-success text-white shadow-sm">
                 <i class="fa-solid fa-robot"></i>
             </div>
             <div class="message-content">
-                <div class="message-bubble bot-bubble">
+                <div class="message-bubble bot-bubble shadow-sm">
                     ${formattedText}
                 </div>
                 <span class="message-time">${getTime()}</span>
@@ -230,11 +263,11 @@ function showTypingIndicator() {
 
     const html = `
         <div class="message-group bot-message animate-message" id="typing-indicator">
-            <div class="bot-avatar">
+            <div class="bot-avatar bg-success text-white shadow-sm">
                 <i class="fa-solid fa-robot"></i>
             </div>
             <div class="message-content">
-                <div class="message-bubble bot-bubble typing-bubble">
+                <div class="message-bubble bot-bubble typing-bubble shadow-sm">
                     <div class="typing-dots">
                         <span></span>
                         <span></span>
@@ -271,6 +304,7 @@ function showQuickReplies(replies) {
     quickRepliesContainer.style.display = 'flex';
 }
 
+// ---- Hide Quick Replies ----
 function hideQuickReplies() {
     quickRepliesContainer.style.display = 'none';
     quickRepliesContainer.innerHTML = '';
@@ -351,17 +385,50 @@ function resetChat() {
     })
     .then(r => r.json())
     .then(data => {
-        // Clear all messages except the divider
+        // Clear and render welcome state
         chatMessages.innerHTML = `
             <div class="chat-date-divider">
                 <span>Hari Ini</span>
+            </div>
+            
+            <!-- Re-render Welcome Card -->
+            <div class="welcome-card border-0 shadow-sm rounded-4 p-4 text-center mb-4" id="welcome-card">
+                <div class="welcome-avatar-wrapper bg-success bg-opacity-10 text-success mx-auto mb-3">
+                    <i class="bi bi-robot fs-1 animate-pulse"></i>
+                </div>
+                <h4 class="fw-bold text-dark mb-2">🤖 DiagnoPet Assistant</h4>
+                <p class="text-muted mb-4">
+                    Sesi telah direset! Halo kembali 👋 Silakan tulis gejala atau keluhan klinis yang dialami anjing/kucing Anda untuk mendiagnosa penyakitnya secara cepat menggunakan **Sistem Pakar Naive Bayes**.
+                </p>
+                
+                <div class="suggested-prompts-grid row g-2 text-start">
+                    <div class="col-md-6">
+                        <button type="button" class="btn prompt-item w-100" onclick="useSuggestedPrompt('Anjing saya lemas dan tidak mau makan')">
+                            <i class="bi bi-chat-heart text-primary me-2"></i> Anjing lemas & tidak makan
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn prompt-item w-100" onclick="useSuggestedPrompt('Kucing saya batuk dan bersin-bersin')">
+                            <i class="bi bi-chat-heart text-success me-2"></i> Kucing batuk & bersin
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn prompt-item w-100" onclick="useSuggestedPrompt('Hewan saya muntah dan diare terus')">
+                            <i class="bi bi-chat-heart text-danger me-2"></i> Muntah & diare terus
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn prompt-item w-100" onclick="useSuggestedPrompt('Mata kucing saya berair jernih')">
+                            <i class="bi bi-chat-heart text-info me-2"></i> Mata kucing berair jernih
+                        </button>
+                    </div>
+                </div>
             </div>
         `;
         hideQuickReplies();
         gejalaCounter.style.display = 'none';
         gejalaPanel.style.display = 'none';
-
-        addBotMessage("🔄 Sesi telah direset!\n\nHalo kembali! 👋 Silakan ceritakan gejala hewan Anda dari awal.\n\n**Contoh:**\n• \"Anjing saya lemas dan tidak mau makan\"\n• \"Kucing saya batuk dan pilek\"", []);
+        chatInput.focus();
     })
     .catch(() => {
         addBotMessage('⚠️ Gagal mereset sesi. Silakan coba lagi.', []);
@@ -372,10 +439,8 @@ function resetChat() {
 
 btnSend.addEventListener('click', () => sendMessage());
 
-// Mode toggle button
 if (btnToggleMode) {
     btnToggleMode.addEventListener('click', () => {
-        // read current mode from badge text
         const current = (modeIndicator && modeIndicator.textContent && modeIndicator.textContent.toLowerCase().includes('stepwise')) ? 'stepwise' : 'immediate';
         const newMode = current === 'immediate' ? 'stepwise' : 'immediate';
 
@@ -406,7 +471,6 @@ chatInput.addEventListener('keypress', function(event) {
 });
 
 btnReset.addEventListener('click', resetChat);
-
 btnScrollBottom.addEventListener('click', scrollToBottom);
 
 btnToggleGejala.addEventListener('click', () => {
@@ -421,10 +485,7 @@ btnCloseGejala.addEventListener('click', () => {
     gejalaPanel.style.display = 'none';
 });
 
-// Focus input on load
 chatInput.focus();
-
-// Initial status check
 updateGejalaCounter();
 
 </script>

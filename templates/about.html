@@ -2,47 +2,228 @@
 
 {% block content %}
 <div class="row justify-content-center animate-fade-in">
-    <div class="col-lg-8 text-center mb-5">
-        <h2 class="display-5 fw-bold text-dark"><i class="fa-solid fa-circle-info text-primary me-3"></i>Tentang DiagnoPet AI</h2>
-        <p class="lead text-muted mt-3">Proyek sistem pakar untuk mendiagnosis penyakit pada hewan peliharaan menggunakan metode klasifikasi kecerdasan buatan.</p>
+    <!-- Header Section -->
+    <div class="col-lg-10 text-center mb-5">
+        <h2 class="display-5 fw-bold text-dark mb-3">
+            <i class="fa-solid fa-circle-info text-primary me-2"></i>Tentang DiagnoPet AI
+        </h2>
+        <p class="lead text-muted max-w-700 mx-auto">
+            Sistem pakar asisten kesehatan digital berbasis web untuk diagnosis dini penyakit anjing & kucing menggunakan model matematis cerdas.
+        </p>
     </div>
 
-    <div class="col-lg-8">
-        <div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="col-lg-10">
+        <!-- 1. LATAR BELAKANG CARD -->
+        <div class="card border-0 shadow-sm rounded-4 mb-5">
             <div class="card-body p-4 p-md-5">
-                <h4 class="fw-bold mb-4 border-bottom pb-2">Latar Belakang</h4>
-                <p class="text-muted lh-lg">
-                    DiagnoPet AI dibangun untuk membantu para pemilik hewan peliharaan (terutama anjing dan kucing) dalam mengidentifikasi gejala-gejala awal penyakit secara cepat. Sistem ini memanfaatkan dataset pakar yang berisi probabilitas relasi antara gejala dan jenis penyakit.
-                </p>
-                <p class="text-muted lh-lg">
-                    Algoritma utama yang digunakan dalam sistem ini adalah <strong>Naive Bayes Classifier</strong>. Meskipun hasilnya cukup akurat, diagnosa ini bersifat pendamping dan bukan pengganti vonis dokter hewan profesional.
-                </p>
-            </div>
-        </div>
-
-        <div class="card border-0 shadow-sm rounded-4 text-center">
-            <div class="card-body p-4 p-md-5">
-                <h4 class="fw-bold mb-4">Teknologi yang Digunakan</h4>
-                <div class="d-flex justify-content-center gap-4 flex-wrap mt-4">
-                    <div class="tech-badge">
-                        <i class="fa-brands fa-python fa-3x text-primary mb-2"></i>
-                        <h6 class="fw-bold">Python</h6>
+                <div class="row align-items-center">
+                    <div class="col-md-7 text-start">
+                        <h4 class="fw-bold text-dark mb-4 border-bottom pb-2">Latar Belakang Proyek</h4>
+                        <p class="text-muted lh-lg">
+                            DiagnoPet AI didesain untuk menjadi garda pertama bagi pemilik hewan peliharaan dalam mengidentifikasi gejala-gejala awal klinis yang dialami kucing atau anjing mereka. Seringkali penanganan terlambat karena kurangnya pemahaman pemilik tentang gejala penyakit kritis.
+                        </p>
+                        <p class="text-muted lh-lg">
+                            Dengan mengkorelasikan data klinis riwayat gejala hewan dengan database probabilitas penyakit lewat framework sistem pakar, DiagnoPet AI dapat memberikan perkiraan kecocokan penyakit secara instan beserta solusi langkah penanganan pertama yang aman.
+                        </p>
                     </div>
-                    <div class="tech-badge mx-3">
-                        <i class="fa-solid fa-globe fa-3x text-dark mb-2"></i>
-                        <h6 class="fw-bold">Flask</h6>
-                    </div>
-                    <div class="tech-badge mx-3">
-                        <i class="fa-brands fa-bootstrap fa-3x text-primary mb-2"></i>
-                        <h6 class="fw-bold">Bootstrap 5</h6>
-                    </div>
-                    <div class="tech-badge mx-3">
-                        <i class="fa-brands fa-html5 fa-3x text-danger mb-2"></i>
-                        <h6 class="fw-bold">HTML5 & CSS3</h6>
+                    <div class="col-md-5 text-center d-none d-md-block">
+                        <div class="p-4 bg-success bg-opacity-10 rounded-4">
+                            <i class="fa-solid fa-shield-dog fa-5x text-success mb-3 d-block animate-pulse"></i>
+                            <span class="text-muted text-xs d-block">Asisten Kesehatan Anabul Anda</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- 2. PROJECT STATISTICS -->
+        <div class="row text-center g-4 mb-5">
+            <div class="col-6 col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <h3 class="display-6 fw-bold text-success mb-1">9</h3>
+                    <p class="text-muted text-sm fw-semibold mb-0">Penyakit Tercover</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <h3 class="display-6 fw-bold text-primary mb-1">52</h3>
+                    <p class="text-muted text-sm fw-semibold mb-0">Gejala Klinis</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <h3 class="display-6 fw-bold text-info mb-1">100%</h3>
+                    <p class="text-muted text-sm fw-semibold mb-0">Akurasi Bayes</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+                    <h3 class="display-6 fw-bold text-warning mb-1">&lt; 2s</h3>
+                    <p class="text-muted text-sm fw-semibold mb-0">Waktu Diagnosa</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. VISUAL SYSTEM WORKFLOW -->
+        <div class="row text-center mt-5 mb-5 workflow-section g-4">
+            <div class="col-12 mb-2">
+                <h4 class="fw-bold text-dark"><i class="bi bi-diagram-3-fill text-primary me-2"></i>Workflow Alur Sistem</h4>
+                <p class="text-muted">Bagaimana DiagnoPet AI menganalisis data untuk menghasilkan diagnosa medis</p>
+            </div>
+            
+            <div class="col-lg-3 col-sm-6">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-4 position-relative workflow-step">
+                    <div class="workflow-num shadow-sm">1</div>
+                    <div class="workflow-icon bg-primary bg-opacity-10 text-primary mx-auto mb-3">
+                        <i class="bi bi-input-cursor-text fs-3"></i>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-2">Input Gejala</h6>
+                    <p class="text-muted text-xs mb-0">Pengguna mencentang pilihan gejala secara manual atau mengetik keluhan bahasa Indonesia sehari-hari.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-sm-6">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-4 position-relative workflow-step">
+                    <div class="workflow-num shadow-sm">2</div>
+                    <div class="workflow-icon bg-info bg-opacity-10 text-info mx-auto mb-3">
+                        <i class="bi bi-cpu fs-3"></i>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-2">NLP & Stemming</h6>
+                    <p class="text-muted text-xs mb-0">Sistem mengekstrak gejala klinis dari teks input didukung stemming stemming bahasa dari pustaka Sastrawi.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-sm-6">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-4 position-relative workflow-step">
+                    <div class="workflow-num shadow-sm">3</div>
+                    <div class="workflow-icon bg-warning bg-opacity-10 text-warning mx-auto mb-3">
+                        <i class="bi bi-calculator fs-3"></i>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-2">Naive Bayes</h6>
+                    <p class="text-muted text-xs mb-0">Mesin inferensi menghitung probabilitas posterior penyakit berdasarkan likelihood frekuensi gejala.</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-sm-6">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-4 position-relative workflow-step">
+                    <div class="workflow-num shadow-sm">4</div>
+                    <div class="workflow-icon bg-success bg-opacity-10 text-success mx-auto mb-3">
+                        <i class="bi bi-file-earmark-medical fs-3"></i>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-2">Hasil & Solusi</h6>
+                    <p class="text-muted text-xs mb-0">Hasil peringkat probabilitas penyakit, tingkat keyakinan match, dan solusi pertolongan medis ditampilkan.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. TECHNOLOGY STACK SECTION -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-5 mt-5">
+            <h4 class="fw-bold text-center text-dark mb-4"><i class="bi bi-stack text-primary me-2"></i>Teknologi & Stack Pengembangan</h4>
+            <div class="row g-4 mt-2">
+                <div class="col-6 col-md-4">
+                    <div class="card h-100 text-center p-3 tech-stack-card border-0 shadow-sm rounded-4">
+                        <div class="card-body">
+                            <i class="fa-brands fa-python text-primary tech-stack-icon animate-pulse"></i>
+                            <h6 class="fw-bold text-dark mb-1">Python</h6>
+                            <small class="text-muted text-xs d-block">Bahasa Backend Utama</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="card h-100 text-center p-3 tech-stack-card border-0 shadow-sm rounded-4">
+                        <div class="card-body">
+                            <i class="bi bi-globe text-success tech-stack-icon"></i>
+                            <h6 class="fw-bold text-dark mb-1">Flask</h6>
+                            <small class="text-muted text-xs d-block">Routing & Web App Engine</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="card h-100 text-center p-3 tech-stack-card border-0 shadow-sm rounded-4">
+                        <div class="card-body">
+                            <i class="fa-brands fa-bootstrap text-purple tech-stack-icon" style="color: #6f42c1;"></i>
+                            <h6 class="fw-bold text-dark mb-1">Bootstrap 5</h6>
+                            <small class="text-muted text-xs d-block">UI Responsif & Modern</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="card h-100 text-center p-3 tech-stack-card border-0 shadow-sm rounded-4">
+                        <div class="card-body">
+                            <i class="bi bi-calculator text-warning tech-stack-icon"></i>
+                            <h6 class="fw-bold text-dark mb-1">Naive Bayes</h6>
+                            <small class="text-muted text-xs d-block">Logika Inferensi Probabilitas</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="card h-100 text-center p-3 tech-stack-card border-0 shadow-sm rounded-4">
+                        <div class="card-body">
+                            <i class="bi bi-chat-square-quote text-info tech-stack-icon"></i>
+                            <h6 class="fw-bold text-dark mb-1">NLP</h6>
+                            <small class="text-muted text-xs d-block">Ekstraksi Gejala Teks Kalimat</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div class="card h-100 text-center p-3 tech-stack-card border-0 shadow-sm rounded-4">
+                        <div class="card-body">
+                            <i class="bi bi-spellcheck text-danger tech-stack-icon"></i>
+                            <h6 class="fw-bold text-dark mb-1">Sastrawi</h6>
+                            <small class="text-muted text-xs d-block">Stemming Bahasa Indonesia</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. TEAM MEMBERS (KELOMPOK 13) -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-4">
+            <h4 class="fw-bold text-center text-dark mb-4"><i class="bi bi-people-fill text-primary me-2"></i>Tim Pengembang (Kelompok 13)</h4>
+            <p class="text-muted text-center mb-5 max-w-600 mx-auto">Anggota Kelompok 13 yang berdedikasi membangun aplikasi DiagnoPet AI.</p>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4">
+                    <div class="card text-center p-4 border-0 shadow-sm rounded-4 team-card h-100">
+                        <div class="team-avatar mb-3 shadow-sm">
+                            <i class="bi bi-person-fill fs-1 text-primary"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-1">Anggota 1</h6>
+                        <span class="text-muted text-xs d-block mb-3">AI Engineer & Backend Developer</span>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-light btn-sm rounded-circle"><i class="fa-brands fa-github text-dark"></i></a>
+                            <a href="#" class="btn btn-light btn-sm rounded-circle"><i class="fa-brands fa-linkedin text-primary"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center p-4 border-0 shadow-sm rounded-4 team-card h-100">
+                        <div class="team-avatar mb-3 shadow-sm">
+                            <i class="bi bi-person-fill fs-1 text-success"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-1">Anggota 2</h6>
+                        <span class="text-muted text-xs d-block mb-3">Frontend Developer & UI/UX Designer</span>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-light btn-sm rounded-circle"><i class="fa-brands fa-github text-dark"></i></a>
+                            <a href="#" class="btn btn-light btn-sm rounded-circle"><i class="fa-brands fa-linkedin text-primary"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center p-4 border-0 shadow-sm rounded-4 team-card h-100">
+                        <div class="team-avatar mb-3 shadow-sm">
+                            <i class="bi bi-person-fill fs-1 text-warning"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-1">Anggota 3</h6>
+                        <span class="text-muted text-xs d-block mb-3">Data Analyst & QA Specialist</span>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="#" class="btn btn-light btn-sm rounded-circle"><i class="fa-brands fa-github text-dark"></i></a>
+                            <a href="#" class="btn btn-light btn-sm rounded-circle"><i class="fa-brands fa-linkedin text-primary"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 {% endblock %}

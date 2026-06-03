@@ -3,76 +3,503 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-lg-10">
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-header bg-success text-white px-4 py-3 rounded-top-4 d-flex align-items-center">
-                <i class="fa-solid fa-clipboard-list fa-lg me-3"></i>
-                <h4 class="mb-0 fw-bold">Pilih Gejala</h4>
+        <!-- Header Banner -->
+        <div class="diagnose-title-section text-center animate-fade-in">
+            <i class="fa-solid fa-stethoscope fa-3x mb-3 animate-pulse"></i>
+            <h2 class="fw-bold mb-2">Pilih Gejala Hewan Peliharaan</h2>
+            <p class="mb-0 opacity-75">Gunakan NLP (tulis bebas) atau pilih gejala secara manual per kategori</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-wrapper animate-fade-in" style="animation-delay: 0.1s;">
+            <div class="search-input-group">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" id="symptomSearch" class="search-input" placeholder="Cari gejala hewan Anda... (contoh: Demam, Diare, Muntah)" autocomplete="off">
+                <button type="button" id="clearSearchBtn" class="search-clear-btn">
+                    <i class="bi bi-x-circle-fill"></i>
+                </button>
             </div>
+        </div>
 
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden animate-fade-in" style="animation-delay: 0.2s;">
             <div class="card-body p-4 p-md-5">
-
-                <p class="text-muted mb-4">
-                    Centang gejala yang dialami hewan atau tuliskan gejalanya dalam bentuk kalimat.
-                </p>
-
                 <form action="{{ url_for('hasil') }}" method="POST">
-
+                    
+                    <!-- NLP Input Section -->
                     <div class="mb-4">
-                        <label class="form-label fw-bold">
-                            Jelaskan Gejala Hewan Anda
+                        <label class="form-label fw-bold text-dark fs-5 mb-2">
+                            <i class="bi bi-magic text-primary me-2"></i>Jelaskan Keluhan Secara Bebas
                         </label>
-
                         <textarea
-                            class="form-control"
+                            class="form-control border-2 rounded-3 p-3 text-area-nlp"
                             name="gejala_text"
                             rows="4"
-                            placeholder="Contoh: Kucing saya terlihat lemas, tidak mau makan dan badannya panas"></textarea>
-
-                        <small class="text-muted">
-                            Sistem akan mencoba mengenali gejala secara otomatis menggunakan NLP.
-                        </small>
+                            placeholder="Contoh: Kucing saya lesu sekali sejak kemarin, tidak mau makan, hidungnya agak berlendir dan bersin-bersin..."></textarea>
+                        <div class="form-text text-muted mt-2">
+                            <i class="bi bi-lightbulb-fill text-warning me-1"></i> Sistem AI akan mengekstrak gejala klinis dari teks di atas secara otomatis menggunakan pemroses NLP.
+                        </div>
                     </div>
 
-                    <hr class="my-4">
+                    <hr class="my-5">
 
-                    <h5 class="fw-bold mb-3">
-                        Atau Pilih Gejala Secara Manual
-                    </h5>
+                    <!-- Manual Symptom Selector Grouping -->
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h4 class="fw-bold text-dark mb-0">
+                            <i class="bi bi-list-task text-success me-2"></i>Pilih Gejala Secara Manual
+                        </h4>
+                        <span class="text-muted text-sm d-none d-md-inline">
+                            <i class="bi bi-info-circle me-1"></i>Arahkan kursor ke ikon info untuk deskripsi gejala
+                        </span>
+                    </div>
 
-                    <div class="row">
-                        {% for gejala in list_gejala %}
-                        <div class="col-md-6 col-lg-4 mb-3">
-                            <div class="form-check custom-checkbox-card shadow-sm rounded-3 p-3 h-100 position-relative">
-                                <input class="form-check-input ms-1 me-2"
-                                       type="checkbox"
-                                       name="gejala"
-                                       value="{{ gejala }}"
-                                       id="gejala_{{ loop.index }}">
+                    <!-- Category Lists Definition -->
+                    {% set cat_pernapasan = [
+                        "Batuk", "Batuk terus menerus", "Batuk seperti tersedak", 
+                        "Batuk berdahak putih berbusa", "Batuk disertai muntah kuning", 
+                        "Bersin-bersin", "Pilek", "Sesak nafas", "Hidung mengering"
+                    ] %}
+                    {% set cat_pencernaan = [
+                        "Anoreksia", "Sulit menelan makanan", "Mual", "Muntah", 
+                        "Diare", "Diare terus menerus", "Diare kuning kehijauan", 
+                        "Diare berdarah", "Dehidrasi", "Sering minum", "Perut membesar"
+                    ] %}
+                    {% set cat_mata = [
+                        "Mata sayu", "Mata merah", "Leleran jernih", "Leleran kuning", 
+                        "Mata kuning", "Mata juling"
+                    ] %}
+                    {% set cat_saraf = [
+                        "Kelumpuhan", "Kedutan", "Kejang", "Mulut berbusa", "Takut air"
+                    ] %}
+                    {% set cat_kulit = [
+                        "Kulit kuning", "Gusi kuning", "Bengkak tubuh", "Bulu kusam", 
+                        "Kulit mengelupas", "Kulit bernanah", "Telapak kaki mengeras", "Bau badan", "Pucat"
+                    ] %}
+                    {% set cat_perilaku = [
+                        "Lesu", "Demam", "Senang ditempat dingin", "Suhu badan dibawah normal", 
+                        "Sering tidur", "Menyendiri", "Bersembunyi", "Pendiam", "Gelisah", 
+                        "Agresif", "Takut cahaya", "Ekor turun"
+                    ] %}
 
-                                <label class="form-check-label w-100 fw-medium stretched-link"
-                                       for="gejala_{{ loop.index }}"
-                                       style="cursor: pointer;">
-                                    {{ gejala }}
-                                </label>
+                    <!-- Search Empty State -->
+                    <div id="noSymptomsFound" class="text-center py-5 d-none">
+                        <i class="bi bi-search-heart fs-1 text-muted mb-3 d-block"></i>
+                        <h5 class="fw-bold text-muted">Gejala Tidak Ditemukan</h5>
+                        <p class="text-muted mb-0">Coba gunakan kata kunci pencarian yang lain.</p>
+                    </div>
+
+                    <!-- Accordion Selector -->
+                    <div class="accordion" id="symptomAccordion">
+                        
+                        <!-- 1. Pernapasan -->
+                        <div class="accordion-item symptom-accordion-item" data-category="pernapasan">
+                            <h2 class="accordion-header" id="headingPernapasan">
+                                <button class="accordion-button symptom-accordion-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePernapasan" aria-expanded="false" aria-controls="collapsePernapasan">
+                                    <span class="d-flex align-items-center">
+                                        <i class="bi bi-wind me-2 text-info fs-5"></i>
+                                        <span>Pernapasan</span>
+                                    </span>
+                                    <span class="badge-selected-count me-3" id="badge-pernapasan">0 terpilih</span>
+                                </button>
+                            </h2>
+                            <div id="collapsePernapasan" class="accordion-collapse collapse" aria-labelledby="headingPernapasan" data-bs-parent="#symptomAccordion">
+                                <div class="accordion-body p-4 bg-light bg-opacity-50">
+                                    <div class="row g-3">
+                                        {% for gejala in list_gejala if gejala in cat_pernapasan %}
+                                        <div class="col-md-6 col-lg-4 symptom-card-wrapper">
+                                            <div class="symptom-card d-flex align-items-center justify-content-between" onclick="toggleSymptomCard(this)">
+                                                <div class="d-flex align-items-center flex-grow-1">
+                                                    <input class="form-check-input symptom-check-input flex-shrink-0"
+                                                           type="checkbox"
+                                                           name="gejala"
+                                                           value="{{ gejala }}"
+                                                           id="gejala_{{ loop.index }}_res"
+                                                           onclick="event.stopPropagation(); updateSymptomState(this);">
+                                                    <label class="symptom-label mb-0" for="gejala_{{ loop.index }}_res">
+                                                        {{ gejala }}
+                                                    </label>
+                                                </div>
+                                                <i class="bi bi-info-circle symptom-info-icon ms-2 flex-shrink-0"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   data-bs-title="{{ deskripsi_gejala.get(gejala, 'Deskripsi gejala belum tersedia.') }}"
+                                                   onclick="event.stopPropagation();"></i>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        {% endfor %}
-                    </div>
 
+                        <!-- 2. Pencernaan -->
+                        <div class="accordion-item symptom-accordion-item" data-category="pencernaan">
+                            <h2 class="accordion-header" id="headingPencernaan">
+                                <button class="accordion-button symptom-accordion-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePencernaan" aria-expanded="false" aria-controls="collapsePencernaan">
+                                    <span class="d-flex align-items-center">
+                                        <i class="bi bi-droplet-half me-2 text-danger fs-5"></i>
+                                        <span>Pencernaan</span>
+                                    </span>
+                                    <span class="badge-selected-count me-3" id="badge-pencernaan">0 terpilih</span>
+                                </button>
+                            </h2>
+                            <div id="collapsePencernaan" class="accordion-collapse collapse" aria-labelledby="headingPencernaan" data-bs-parent="#symptomAccordion">
+                                <div class="accordion-body p-4 bg-light bg-opacity-50">
+                                    <div class="row g-3">
+                                        {% for gejala in list_gejala if gejala in cat_pencernaan %}
+                                        <div class="col-md-6 col-lg-4 symptom-card-wrapper">
+                                            <div class="symptom-card d-flex align-items-center justify-content-between" onclick="toggleSymptomCard(this)">
+                                                <div class="d-flex align-items-center flex-grow-1">
+                                                    <input class="form-check-input symptom-check-input flex-shrink-0"
+                                                           type="checkbox"
+                                                           name="gejala"
+                                                           value="{{ gejala }}"
+                                                           id="gejala_{{ loop.index }}_dig"
+                                                           onclick="event.stopPropagation(); updateSymptomState(this);">
+                                                    <label class="symptom-label mb-0" for="gejala_{{ loop.index }}_dig">
+                                                        {{ gejala }}
+                                                    </label>
+                                                </div>
+                                                <i class="bi bi-info-circle symptom-info-icon ms-2 flex-shrink-0"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   data-bs-title="{{ deskripsi_gejala.get(gejala, 'Deskripsi gejala belum tersedia.') }}"
+                                                   onclick="event.stopPropagation();"></i>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Mata -->
+                        <div class="accordion-item symptom-accordion-item" data-category="mata">
+                            <h2 class="accordion-header" id="headingMata">
+                                <button class="accordion-button symptom-accordion-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMata" aria-expanded="false" aria-controls="collapseMata">
+                                    <span class="d-flex align-items-center">
+                                        <i class="bi bi-eye me-2 text-primary fs-5"></i>
+                                        <span>Mata</span>
+                                    </span>
+                                    <span class="badge-selected-count me-3" id="badge-mata">0 terpilih</span>
+                                </button>
+                            </h2>
+                            <div id="collapseMata" class="accordion-collapse collapse" aria-labelledby="headingMata" data-bs-parent="#symptomAccordion">
+                                <div class="accordion-body p-4 bg-light bg-opacity-50">
+                                    <div class="row g-3">
+                                        {% for gejala in list_gejala if gejala in cat_mata %}
+                                        <div class="col-md-6 col-lg-4 symptom-card-wrapper">
+                                            <div class="symptom-card d-flex align-items-center justify-content-between" onclick="toggleSymptomCard(this)">
+                                                <div class="d-flex align-items-center flex-grow-1">
+                                                    <input class="form-check-input symptom-check-input flex-shrink-0"
+                                                           type="checkbox"
+                                                           name="gejala"
+                                                           value="{{ gejala }}"
+                                                           id="gejala_{{ loop.index }}_eye"
+                                                           onclick="event.stopPropagation(); updateSymptomState(this);">
+                                                    <label class="symptom-label mb-0" for="gejala_{{ loop.index }}_eye">
+                                                        {{ gejala }}
+                                                    </label>
+                                                </div>
+                                                <i class="bi bi-info-circle symptom-info-icon ms-2 flex-shrink-0"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   data-bs-title="{{ deskripsi_gejala.get(gejala, 'Deskripsi gejala belum tersedia.') }}"
+                                                   onclick="event.stopPropagation();"></i>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Saraf -->
+                        <div class="accordion-item symptom-accordion-item" data-category="saraf">
+                            <h2 class="accordion-header" id="headingSaraf">
+                                <button class="accordion-button symptom-accordion-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSaraf" aria-expanded="false" aria-controls="collapseSaraf">
+                                    <span class="d-flex align-items-center">
+                                        <i class="bi bi-activity me-2 text-warning fs-5"></i>
+                                        <span>Saraf</span>
+                                    </span>
+                                    <span class="badge-selected-count me-3" id="badge-saraf">0 terpilih</span>
+                                </button>
+                            </h2>
+                            <div id="collapseSaraf" class="accordion-collapse collapse" aria-labelledby="headingSaraf" data-bs-parent="#symptomAccordion">
+                                <div class="accordion-body p-4 bg-light bg-opacity-50">
+                                    <div class="row g-3">
+                                        {% for gejala in list_gejala if gejala in cat_saraf %}
+                                        <div class="col-md-6 col-lg-4 symptom-card-wrapper">
+                                            <div class="symptom-card d-flex align-items-center justify-content-between" onclick="toggleSymptomCard(this)">
+                                                <div class="d-flex align-items-center flex-grow-1">
+                                                    <input class="form-check-input symptom-check-input flex-shrink-0"
+                                                           type="checkbox"
+                                                           name="gejala"
+                                                           value="{{ gejala }}"
+                                                           id="gejala_{{ loop.index }}_neu"
+                                                           onclick="event.stopPropagation(); updateSymptomState(this);">
+                                                    <label class="symptom-label mb-0" for="gejala_{{ loop.index }}_neu">
+                                                        {{ gejala }}
+                                                    </label>
+                                                </div>
+                                                <i class="bi bi-info-circle symptom-info-icon ms-2 flex-shrink-0"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   data-bs-title="{{ deskripsi_gejala.get(gejala, 'Deskripsi gejala belum tersedia.') }}"
+                                                   onclick="event.stopPropagation();"></i>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5. Kulit -->
+                        <div class="accordion-item symptom-accordion-item" data-category="kulit">
+                            <h2 class="accordion-header" id="headingKulit">
+                                <button class="accordion-button symptom-accordion-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKulit" aria-expanded="false" aria-controls="collapseKulit">
+                                    <span class="d-flex align-items-center">
+                                        <i class="bi bi-bandaid me-2 text-success fs-5"></i>
+                                        <span>Kulit & Fisik Luar</span>
+                                    </span>
+                                    <span class="badge-selected-count me-3" id="badge-kulit">0 terpilih</span>
+                                </button>
+                            </h2>
+                            <div id="collapseKulit" class="accordion-collapse collapse" aria-labelledby="headingKulit" data-bs-parent="#symptomAccordion">
+                                <div class="accordion-body p-4 bg-light bg-opacity-50">
+                                    <div class="row g-3">
+                                        {% for gejala in list_gejala if gejala in cat_kulit %}
+                                        <div class="col-md-6 col-lg-4 symptom-card-wrapper">
+                                            <div class="symptom-card d-flex align-items-center justify-content-between" onclick="toggleSymptomCard(this)">
+                                                <div class="d-flex align-items-center flex-grow-1">
+                                                    <input class="form-check-input symptom-check-input flex-shrink-0"
+                                                           type="checkbox"
+                                                           name="gejala"
+                                                           value="{{ gejala }}"
+                                                           id="gejala_{{ loop.index }}_ski"
+                                                           onclick="event.stopPropagation(); updateSymptomState(this);">
+                                                    <label class="symptom-label mb-0" for="gejala_{{ loop.index }}_ski">
+                                                        {{ gejala }}
+                                                    </label>
+                                                </div>
+                                                <i class="bi bi-info-circle symptom-info-icon ms-2 flex-shrink-0"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   data-bs-title="{{ deskripsi_gejala.get(gejala, 'Deskripsi gejala belum tersedia.') }}"
+                                                   onclick="event.stopPropagation();"></i>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 6. Perilaku -->
+                        <div class="accordion-item symptom-accordion-item" data-category="perilaku">
+                            <h2 class="accordion-header" id="headingPerilaku">
+                                <button class="accordion-button symptom-accordion-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePerilaku" aria-expanded="false" aria-controls="collapsePerilaku">
+                                    <span class="d-flex align-items-center">
+                                        <i class="bi bi-emoji-smile me-2 text-secondary fs-5"></i>
+                                        <span>Perilaku & Umum</span>
+                                    </span>
+                                    <span class="badge-selected-count me-3" id="badge-perilaku">0 terpilih</span>
+                                </button>
+                            </h2>
+                            <div id="collapsePerilaku" class="accordion-collapse collapse" aria-labelledby="headingPerilaku" data-bs-parent="#symptomAccordion">
+                                <div class="accordion-body p-4 bg-light bg-opacity-50">
+                                    <div class="row g-3">
+                                        {% for gejala in list_gejala if gejala in cat_perilaku %}
+                                        <div class="col-md-6 col-lg-4 symptom-card-wrapper">
+                                            <div class="symptom-card d-flex align-items-center justify-content-between" onclick="toggleSymptomCard(this)">
+                                                <div class="d-flex align-items-center flex-grow-1">
+                                                    <input class="form-check-input symptom-check-input flex-shrink-0"
+                                                           type="checkbox"
+                                                           name="gejala"
+                                                           value="{{ gejala }}"
+                                                           id="gejala_{{ loop.index }}_beh"
+                                                           onclick="event.stopPropagation(); updateSymptomState(this);">
+                                                    <label class="symptom-label mb-0" for="gejala_{{ loop.index }}_beh">
+                                                        {{ gejala }}
+                                                    </label>
+                                                </div>
+                                                <i class="bi bi-info-circle symptom-info-icon ms-2 flex-shrink-0"
+                                                   data-bs-toggle="tooltip"
+                                                   data-bs-placement="top"
+                                                   data-bs-title="{{ deskripsi_gejala.get(gejala, 'Deskripsi gejala belum tersedia.') }}"
+                                                   onclick="event.stopPropagation();"></i>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div> <!-- End Accordion -->
+
+                    <!-- Submit Area -->
                     <div class="text-center mt-5">
-                        <button type="submit"
+                        <button type="submit" id="btnDiagnoseSubmit"
                                 class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow w-100 w-md-auto btn-hover-scale">
-
                             <i class="fa-solid fa-stethoscope me-2"></i>
-                            Proses Diagnosa Sekarang
-
+                            <span id="submitBtnText">Proses Diagnosa Sekarang</span>
                         </button>
                     </div>
 
                 </form>
-
             </div>
         </div>
     </div>
 </div>
+
+<!-- symptom-selector scripts -->
+<script>
+    // Toggle card selection state on wrapper click
+    function toggleSymptomCard(cardEl) {
+        const checkbox = cardEl.querySelector('.symptom-check-input');
+        checkbox.checked = !checkbox.checked;
+        updateSymptomState(checkbox);
+    }
+
+    // Update styling and trigger badge recalculation when checkbox changes
+    function updateSymptomState(checkbox) {
+        const card = checkbox.closest('.symptom-card');
+        if (checkbox.checked) {
+            card.classList.add('selected');
+        } else {
+            card.classList.remove('selected');
+        }
+        recalculateBadges();
+    }
+
+    // Recalculate checked counts per category and update badges + CTA button
+    function recalculateBadges() {
+        const categories = ['pernapasan', 'pencernaan', 'mata', 'saraf', 'kulit', 'perilaku'];
+        let totalSelected = 0;
+
+        categories.forEach(cat => {
+            const accordionItem = document.querySelector(`.symptom-accordion-item[data-category="${cat}"]`);
+            if (accordionItem) {
+                const checkedCount = accordionItem.querySelectorAll('.symptom-check-input:checked').length;
+                const badge = document.getElementById(`badge-${cat}`);
+                if (badge) {
+                    badge.textContent = `${checkedCount} terpilih`;
+                    if (checkedCount > 0) {
+                        badge.classList.add('active');
+                    } else {
+                        badge.classList.remove('active');
+                    }
+                }
+                totalSelected += checkedCount;
+            }
+        });
+
+        // Update CTA button text
+        const submitText = document.getElementById('submitBtnText');
+        if (submitText) {
+            if (totalSelected > 0) {
+                submitText.textContent = `Proses Diagnosa (${totalSelected} Gejala Terpilih)`;
+            } else {
+                submitText.textContent = 'Proses Diagnosa Sekarang';
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Init Bootstrap Tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Realtime Search Implementation
+        const searchInput = document.getElementById('symptomSearch');
+        const clearBtn = document.getElementById('clearSearchBtn');
+        const accordionItems = document.querySelectorAll('.symptom-accordion-item');
+        const noSymptomsFound = document.getElementById('noSymptomsFound');
+
+        searchInput.addEventListener('input', function () {
+            const query = searchInput.value.toLowerCase().trim();
+
+            if (query.length > 0) {
+                clearBtn.style.display = 'block';
+            } else {
+                clearBtn.style.display = 'none';
+            }
+
+            let anyMatches = false;
+
+            accordionItems.forEach(item => {
+                const cardWrappers = item.querySelectorAll('.symptom-card-wrapper');
+                let catMatches = 0;
+
+                cardWrappers.forEach(wrapper => {
+                    const labelText = wrapper.querySelector('.symptom-label').textContent.toLowerCase();
+                    if (labelText.includes(query)) {
+                        wrapper.classList.remove('d-none');
+                        catMatches++;
+                    } else {
+                        wrapper.classList.add('d-none');
+                    }
+                });
+
+                const accordionCollapse = item.querySelector('.accordion-collapse');
+                const bootstrapCollapse = bootstrap.Collapse.getOrCreateInstance(accordionCollapse, { toggle: false });
+
+                if (query.length > 0) {
+                    if (catMatches > 0) {
+                        item.classList.remove('d-none');
+                        // Expand if there's match inside
+                        bootstrapCollapse.show();
+                        anyMatches = true;
+                    } else {
+                        item.classList.add('d-none');
+                        // Collapse if no match
+                        bootstrapCollapse.hide();
+                    }
+                } else {
+                    // Reset to default
+                    item.classList.remove('d-none');
+                    wrapperReset(item);
+                    bootstrapCollapse.hide();
+                }
+            });
+
+            if (query.length > 0 && !anyMatches) {
+                noSymptomsFound.classList.remove('d-none');
+            } else {
+                noSymptomsFound.classList.add('d-none');
+            }
+        });
+
+        function wrapperReset(accordionItem) {
+            const wrappers = accordionItem.querySelectorAll('.symptom-card-wrapper');
+            wrappers.forEach(w => w.classList.remove('d-none'));
+        }
+
+        // Clear button action
+        clearBtn.addEventListener('click', function () {
+            searchInput.value = '';
+            clearBtn.style.display = 'none';
+            noSymptomsFound.classList.add('d-none');
+            accordionItems.forEach(item => {
+                item.classList.remove('d-none');
+                wrapperReset(item);
+                const accordionCollapse = item.querySelector('.accordion-collapse');
+                const bootstrapCollapse = bootstrap.Collapse.getOrCreateInstance(accordionCollapse, { toggle: false });
+                bootstrapCollapse.hide();
+            });
+            searchInput.focus();
+        });
+
+        // Initialize state logic for any pre-checked checkboxes (e.g. back button)
+        document.querySelectorAll('.symptom-check-input').forEach(checkbox => {
+            if (checkbox.checked) {
+                checkbox.closest('.symptom-card').classList.add('selected');
+            }
+        });
+        recalculateBadges();
+    });
+</script>
 {% endblock %}

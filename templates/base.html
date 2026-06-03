@@ -3,15 +3,18 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="DiagnoPet AI - Sistem Pakar Diagnosis Penyakit Hewan Peliharaan menggunakan Naive Bayes dan NLP Bahasa Indonesia" />
         <title>DiagnoPet AI - Sistem Pakar Diagnosa Hewan</title>
+        <!-- Google Fonts: Inter + Poppins -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap"
+            rel="stylesheet"
+        />
         <!-- Bootstrap 5 CSS -->
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-        />
-        <!-- Google Fonts -->
-        <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
             rel="stylesheet"
         />
         <!-- Font Awesome -->
@@ -19,56 +22,73 @@
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         />
+        <!-- Bootstrap Icons -->
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        />
         <!-- Custom CSS -->
         <link
             rel="stylesheet"
             href="{{ url_for('static', filename='css/style.css') }}"
         />
     </head>
-    <body>
-        <!-- Navbar Fixed Top -->
-        <nav
-            class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow-sm theme-navbar"
-        >
+    <body class="{% block body_class %}{% endblock %}">
+        <!-- ===== PREMIUM NAVBAR ===== -->
+        <nav class="navbar navbar-expand-lg fixed-top dp-navbar" id="dpNavbar">
             <div class="container">
-                <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
-                    <i class="bi bi-paw me-2"></i>DiagnoPet AI
+                <!-- Brand -->
+                <a class="navbar-brand dp-brand" href="{{ url_for('index') }}">
+                    <span class="dp-brand-icon">
+                        <i class="bi bi-heart-pulse-fill"></i>
+                    </span>
+                    <span class="dp-brand-text">
+                        Diagno<span class="dp-brand-accent">Pet</span> AI
+                    </span>
                 </a>
+
+                <!-- Mobile Toggle -->
                 <button
-                    class="navbar-toggler"
+                    class="navbar-toggler dp-toggler"
                     type="button"
                     data-bs-toggle="collapse"
-                    data-bs-toggle="collapse"
                     data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
                 >
-                    <span class="navbar-toggler-icon"></span>
+                    <span class="dp-toggler-bar"></span>
+                    <span class="dp-toggler-bar"></span>
+                    <span class="dp-toggler-bar"></span>
                 </button>
+
+                <!-- Nav Links -->
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav ms-auto dp-nav-list">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('index') }}"
-                                >Home</a
-                            >
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('diagnosa') }}"
-                                >Diagnosa</a
-                            >
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('chatbot') }}">
-                                <i class="bi bi-robot me-1"></i>Chatbot
+                            <a class="nav-link dp-nav-link" href="{{ url_for('index') }}">
+                                <i class="bi bi-house-door me-1"></i>Beranda
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('info') }}"
-                                >Informasi Penyakit</a
-                            >
+                            <a class="nav-link dp-nav-link" href="{{ url_for('diagnosa') }}">
+                                <i class="bi bi-clipboard2-pulse me-1"></i>Diagnosa
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('about') }}"
-                                >About</a
-                            >
+                            <a class="nav-link dp-nav-link" href="{{ url_for('chatbot') }}">
+                                <i class="bi bi-robot me-1"></i>Asisten AI
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link dp-nav-link" href="{{ url_for('info') }}">
+                                <i class="bi bi-journal-medical me-1"></i>Pusat Informasi
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link dp-nav-link" href="{{ url_for('about') }}">
+                                <i class="bi bi-people me-1"></i>Tentang
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -78,12 +98,14 @@
         <!-- Main Content Area -->
         <div class="container mt-5 pt-5 pb-5 main-wrapper">
             <!-- Flash messages untuk error atau notifikasi -->
-            {% with messages = get_flashed_messages(with_categories=true) %} {%
-            if messages %} {% for category, message in messages %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
             <div
-                class="alert alert-{{ category }} alert-dismissible fade show mt-3 shadow-sm"
+                class="alert alert-{{ category }} alert-dismissible fade show mt-3 dp-alert"
                 role="alert"
             >
+                <i class="bi bi-info-circle-fill me-2"></i>
                 {{ message }}
                 <button
                     type="button"
@@ -92,24 +114,132 @@
                     aria-label="Close"
                 ></button>
             </div>
-            {% endfor %} {% endif %} {% endwith %}
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
 
             <!-- Block kontent dinamis dari halaman masing-masing -->
             {% block content %}{% endblock %}
         </div>
 
-        <!-- Footer -->
-        <footer class="bg-dark text-white text-center py-4 mt-auto">
+        <!-- ===== PREMIUM FOOTER ===== -->
+        {% block footer %}
+        <footer class="dp-footer mt-auto">
+            <div class="dp-footer-accent"></div>
             <div class="container">
-                <p class="mb-0">
-                    &copy; 2026 DiagnoPet AI. Dibuat dengan
-                    <i class="bi bi-heart-fill text-danger"></i> menggunakan
-                    Flask.
-                </p>
+                <div class="row align-items-center py-4">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        <div class="dp-footer-brand">
+                            <i class="bi bi-heart-pulse-fill me-2"></i>
+                            <span>DiagnoPet AI</span>
+                        </div>
+                        <p class="dp-footer-text mb-0">
+                            Sistem Pakar Diagnosis Penyakit Hewan Peliharaan
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <p class="dp-footer-copyright mb-0">
+                            &copy; 2026 DiagnoPet AI &mdash; Dibuat dengan
+                            <i class="bi bi-heart-fill dp-heart"></i> menggunakan
+                            Flask &amp; Naive Bayes
+                        </p>
+                    </div>
+                </div>
             </div>
         </footer>
+        {% endblock %}
+
+        <!-- ===== FLOATING CHAT ASSISTANT ===== -->
+        {% block floating_chat %}
+        <!-- FAB Button -->
+        <button class="fc-fab" id="dpFab"
+                data-bs-toggle="tooltip" data-bs-placement="left"
+                data-bs-title="DiagnoPet Assistant">
+            <i class="bi bi-robot"></i>
+            <span class="fc-fab-badge" id="dpFabBadge"></span>
+            <span class="fc-fab-ring"></span>
+        </button>
+
+        <!-- Chat Popup -->
+        <div class="fc-popup" id="dpChatPopup">
+            <!-- Header -->
+            <div class="fc-header">
+                <div class="fc-header-avatar">
+                    <i class="bi bi-robot"></i>
+                    <span class="fc-header-dot"></span>
+                </div>
+                <div class="fc-header-info">
+                    <div class="fc-header-title">🤖 DiagnoPet Assistant</div>
+                    <div class="fc-header-status">Online • Siap Membantu</div>
+                </div>
+                <div class="fc-header-actions">
+                    <button class="fc-hdr-btn" id="dpChatReset"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            data-bs-title="Reset percakapan">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                    <button class="fc-hdr-btn" id="dpChatClose"
+                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            data-bs-title="Tutup">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div class="fc-messages" id="dpChatMessages"></div>
+
+            <!-- Quick Replies -->
+            <div class="fc-quick-replies" id="dpQuickReplies"></div>
+
+            <!-- Input -->
+            <div class="fc-input-area">
+                <input class="fc-input" id="dpChatInput" type="text"
+                       placeholder="Ketik gejala hewan Anda..." autocomplete="off" />
+                <button class="fc-send-btn" id="dpChatSend">
+                    <i class="bi bi-send-fill"></i>
+                </button>
+            </div>
+        </div>
+        {% endblock %}
+
+        <!-- ===== END FLOATING CHAT ASSISTANT ===== -->
 
         <!-- Bootstrap 5 Bundle JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Floating Chat JS -->
+        <script src="{{ url_for('static', filename='js/floating-chat.js') }}"></script>
+        <!-- Navbar Scroll Effect -->
+        <script>
+            (function () {
+                const nav = document.getElementById('dpNavbar');
+                if (!nav) return;
+                const scrollThreshold = 30;
+                let ticking = false;
+                function updateNav() {
+                    if (window.scrollY > scrollThreshold) {
+                        nav.classList.add('dp-navbar-scrolled');
+                    } else {
+                        nav.classList.remove('dp-navbar-scrolled');
+                    }
+                    ticking = false;
+                }
+                window.addEventListener('scroll', function () {
+                    if (!ticking) {
+                        window.requestAnimationFrame(updateNav);
+                        ticking = true;
+                    }
+                });
+                updateNav();
+
+                // Active link highlight
+                const currentPath = window.location.pathname;
+                document.querySelectorAll('.dp-nav-link').forEach(link => {
+                    if (link.getAttribute('href') === currentPath) {
+                        link.classList.add('active');
+                    }
+                });
+            })();
+        </script>
     </body>
 </html>

@@ -1,65 +1,171 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row align-items-center mb-5 vh-75">
-    <div class="col-lg-6 mb-4 animate-fade-in">
-        <h1 class="display-4 fw-bold text-dark mb-4">
-            Hi, Selamat Datang di <span class="text-success">DiagnoPet AI</span>
-        </h1>
-        <p class="lead text-muted mb-4">
-            Sistem Pakar Diagnosa Penyakit Hewan Peliharaan (Kucing & Anjing). Diagnosa cepat dan akurat menggunakan algoritma <strong>Naive Bayes</strong> untuk kesehatan anabul kesayangan Anda.
-        </p>
-        <div class="d-grid gap-3 d-sm-flex justify-content-sm-start">
-            <a href="{{ url_for('diagnosa') }}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm btn-hover-scale">
-                <i class="fa-solid fa-stethoscope me-2"></i>Mulai Diagnosa
-            </a>
-            <a href="{{ url_for('info') }}" class="btn btn-outline-success btn-lg rounded-pill px-5">
-                <i class="fa-solid fa-book-medical me-2"></i>Info Penyakit
-            </a>
+<div class="landing-page">
+    <!-- Hero Section -->
+    <div class="row align-items-center hero-section min-vh-75 py-4 py-lg-5">
+        <div class="col-lg-6 mb-5 mb-lg-0 text-start animate-fade-in">
+            <div class="badge-ai mb-3">
+                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold">
+                    <i class="bi bi-cpu me-1 animate-pulse"></i> Powered by Naive Bayes & NLP
+                </span>
+            </div>
+            <h1 class="display-3 fw-bold text-dark mb-3 hero-title">
+                DiagnoPet <span class="gradient-text">AI</span>
+            </h1>
+            <h2 class="h3 fw-semibold text-secondary mb-4 hero-subtitle">
+                Asisten Kesehatan Hewan Berbasis AI
+            </h2>
+            <p class="lead text-muted mb-4 hero-description">
+                Platform healthcare pintar yang menganalisis gejala kesehatan kucing dan anjing secara instan. Cukup centang gejala atau ceritakan keluhan Anda untuk diagnosa cepat dan akurat.
+            </p>
+            <div class="d-flex flex-wrap gap-3">
+                <a href="{{ url_for('diagnosa') }}" class="btn btn-gradient btn-lg rounded-pill px-4 py-3 shadow-lg btn-hover-scale">
+                    <i class="bi bi-activity me-2"></i>Mulai Diagnosa
+                </a>
+                <a href="{{ url_for('chatbot') }}" class="btn btn-hover-outline btn-lg rounded-pill px-4 py-3">
+                    <i class="bi bi-chat-dots me-2"></i>Konsultasi AI
+                </a>
+            </div>
         </div>
-    </div>
-    <div class="col-lg-6 text-center position-relative animate-fade-in-right">
-        <!-- Menggunakan Font Awesome sebagai ilustrasi hero -->
-        <div class="p-5 bg-success bg-opacity-10 rounded-circle d-inline-block shadow-sm hero-icon-bg">
-            <i class="fa-solid fa-dog text-primary fa-5x mx-3 hero-bounce"></i>
-            <i class="fa-solid fa-cat text-success fa-5x mx-3 hero-bounce-delay"></i>
-        </div>
-    </div>
-</div>
+        <div class="col-lg-6 text-center animate-fade-in-right position-relative">
+            <!-- Modern Interactive Mockup Card -->
+            <div class="mockup-container px-3">
+                <div class="glowing-orb"></div>
+                <div class="card border-0 shadow-lg rounded-5 bg-white p-4 mx-auto position-relative z-index-2 mockup-card">
+                    <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="mockup-avatar me-3">
+                                <i class="bi bi-heart-pulse-fill text-danger fs-2 animate-pulse"></i>
+                            </div>
+                            <div class="text-start">
+                                <h6 class="fw-bold mb-0 text-dark">DiagnoPet Health Engine</h6>
+                                <small class="text-muted">Status: Active</small>
+                            </div>
+                        </div>
+                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 text-xs">Naive Bayes v1.0</span>
+                    </div>
+                    
+                    <div class="mockup-chats text-start mb-4">
+                        <div class="mockup-bubble bot mb-3">
+                            <div class="bubble-content">
+                                <p class="mb-0 text-sm text-dark">Halo! Saya mendeteksi gejala lesu dan muntah pada kucing Anda. Berdasarkan analisis awal:</p>
+                            </div>
+                        </div>
+                        <div class="mockup-bubble highlight">
+                            <div class="bubble-content">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <span class="fw-bold text-dark text-sm">Kemungkinan: Parvovirus / Panleukopenia</span>
+                                    <span class="text-danger fw-bold text-sm">94.8% Match</span>
+                                </div>
+                                <div class="progress progress-sm" style="height: 6px;">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 94.8%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-<div class="row text-center mt-5">
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 border-0 shadow-sm rounded-4 feature-card">
-            <div class="card-body p-4">
-                <div class="feature-icon bg-primary bg-opacity-10 text-primary mb-3">
-                    <i class="fa-solid fa-bolt fa-2x"></i>
+                    <div class="d-flex justify-content-around text-center mt-3 pt-3 border-top">
+                        <div>
+                            <i class="bi bi-shield-check text-success fs-4 mb-1 d-block"></i>
+                            <span class="text-xs text-muted">Aman & Terpercaya</span>
+                        </div>
+                        <div>
+                            <i class="bi bi-clock-history text-primary fs-4 mb-1 d-block"></i>
+                            <span class="text-xs text-muted">Hasil < 2 Detik</span>
+                        </div>
+                        <div>
+                            <i class="bi bi-chat-left-heart text-info fs-4 mb-1 d-block"></i>
+                            <span class="text-xs text-muted">Dukungan NLP</span>
+                        </div>
+                    </div>
                 </div>
-                <h4 class="fw-bold">Cepat & Responsif</h4>
-                <p class="text-muted">Proses diagnosa langsung memunculkan hasil dalam hitungan detik.</p>
             </div>
         </div>
     </div>
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 border-0 shadow-sm rounded-4 feature-card">
-            <div class="card-body p-4">
-                <div class="feature-icon bg-success bg-opacity-10 text-success mb-3">
-                    <i class="fa-solid fa-brain fa-2x"></i>
+
+    <!-- Statistics Section -->
+    <div class="row text-center mt-5 mb-5 g-4 animate-fade-in">
+        <div class="col-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-3 stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-success bg-opacity-10 text-success mx-auto mb-3">
+                        <i class="bi bi-clipboard-pulse fs-3"></i>
+                    </div>
+                    <h3 class="display-6 fw-bold gradient-text mb-1">52</h3>
+                    <p class="text-muted fw-semibold mb-0">Gejala</p>
                 </div>
-                <h4 class="fw-bold">Berbasis AI</h4>
-                <p class="text-muted">Menggunakan logika Naive Bayes Classifier berdasarkan dataset akurat terkini.</p>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-3 stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-primary bg-opacity-10 text-primary mx-auto mb-3">
+                        <i class="bi bi-virus fs-3"></i>
+                    </div>
+                    <h3 class="display-6 fw-bold gradient-text mb-1">9</h3>
+                    <p class="text-muted fw-semibold mb-0">Penyakit</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-3 stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-info bg-opacity-10 text-info mx-auto mb-3">
+                        <i class="bi bi-chat-right-text fs-3"></i>
+                    </div>
+                    <h3 class="display-6 fw-bold gradient-text mb-1">NLP</h3>
+                    <p class="text-muted fw-semibold mb-0">Assistant</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-3 stat-card">
+                <div class="card-body">
+                    <div class="stat-icon bg-warning bg-opacity-10 text-warning mx-auto mb-3">
+                        <i class="bi bi-brain fs-3"></i>
+                    </div>
+                    <h3 class="display-6 fw-bold gradient-text mb-1">Pakar</h3>
+                    <p class="text-muted fw-semibold mb-0">Sistem Pakar</p>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 border-0 shadow-sm rounded-4 feature-card">
-            <div class="card-body p-4">
-                <div class="feature-icon bg-info bg-opacity-10 text-info mb-3">
-                    <i class="fa-solid fa-hand-holding-heart fa-2x"></i>
+
+    <!-- Feature Cards Section -->
+    <div class="row mt-5 pt-4 text-center g-4 animate-fade-in">
+        <div class="col-12 mb-2">
+            <h2 class="fw-bold text-dark">Mengapa Memilih DiagnoPet AI?</h2>
+            <p class="text-muted">Solusi terintegrasi untuk pendeteksian dini kesehatan hewan peliharaan Anda</p>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 feature-card-modern p-4">
+                <div class="feature-icon-wrapper bg-success bg-opacity-10 text-success mb-4 mx-auto">
+                    <i class="bi bi-lightning-charge-fill fs-3 animate-pulse"></i>
                 </div>
-                <h4 class="fw-bold">Mudah Digunakan</h4>
-                <p class="text-muted">Desain simpel, centang gejala dan langsung dapatkan hasil serta solusi.</p>
+                <h4 class="fw-bold text-dark mb-3">Analisis Instan</h4>
+                <p class="text-muted mb-0">Sistem memproses gejala dalam hitungan milidetik secara real-time menggunakan algoritma probabilistik Naive Bayes.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 feature-card-modern p-4">
+                <div class="feature-icon-wrapper bg-primary bg-opacity-10 text-primary mb-4 mx-auto">
+                    <i class="bi bi-chat-quote-fill fs-3"></i>
+                </div>
+                <h4 class="fw-bold text-dark mb-3">NLP Cerdas</h4>
+                <p class="text-muted mb-0">Ketik keluhan Anda menggunakan kalimat sehari-hari (Bahasa Indonesia). Sistem cerdas kami akan otomatis mengekstrak gejala klinis.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 feature-card-modern p-4">
+                <div class="feature-icon-wrapper bg-info bg-opacity-10 text-info mb-4 mx-auto">
+                    <i class="bi bi-heart-pulse-fill fs-3"></i>
+                </div>
+                <h4 class="fw-bold text-dark mb-3">Saran & Solusi Terpercaya</h4>
+                <p class="text-muted mb-0">Selain diagnosa penyakit, sistem menyediakan deskripsi penyakit mendalam beserta panduan solusi pengobatan darurat.</p>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
+
